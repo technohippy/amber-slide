@@ -1,0 +1,31 @@
+{
+    "name": "amberslide",
+    "description": "The Application or The Library doing The Thing.",
+    "version": "0.1.0",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "/test_runner.js",
+        "test",
+        "tests"
+    ],
+    "authors": [
+        {
+            "name": "Ando Yasushi",
+            "email": "andyjpn@gmail.com"
+        }
+    ],
+    "homepage": "https://github.com/technohippy/amber-slide",
+    "keywords": [
+        "Amber",
+        "Smalltalk"
+    ],
+    "license": [
+        "MIT"
+    ],
+    "private": false,
+    "dependencies": {
+        "amber": "~0.12.4"
+    }
+}
