@@ -12,20 +12,21 @@
   <body>
     <script type='text/javascript'>
       require.config({ paths: {
-          'amber-amberslide': 'src' //mapping compiled .js files and smalltalk source files
+          'Slide': 'src' //mapping compiled .js files and smalltalk source files
       }});
       require([
           'amber/devel',
-          'amber-amberslide/AmberSlide'
+          'Slide/Slide'
       ], function (smalltalk) {
           //used for all new packages in IDE
           smalltalk.initialize({
-            'transport.defaultAmdNamespace': "amber-amberslide"
+            'transport.defaultAmdNamespace': "Slide"
           });
       });
     </script>
     <button onclick="require('amber/helpers').globals.Browser._open()">legacy IDE</button>
     <button onclick="require('amber/helpers').popupHelios()">Helios IDE</button>
+    <button onclick="require('amber/helpers').Presentation._tenka1AltJs2014()._start();">Start</button>
   </body>
 
 </html>
