@@ -55,7 +55,7 @@ renderOn: html
 setupEventHandler
 	window addEventListener: 'keypress' do: [ :event |
 		(event charCode == 112) ifTrue: [ self movePrev ].
-		(event charCode == 110) ifTrue: [ self moveNext ]].
+		(event charCode == 110 | event charCode == 13) ifTrue: [ self moveNext ]].
 ! !
 
 Object subclass: #Presentation
@@ -160,6 +160,23 @@ start
 	widget renderOn: (HTMLCanvas onJQuery: 'body' asJQuery).
 ! !
 
+!Presentation methodsFor: 'evaluating'!
+
+alertIt: aString
+	window alert: (self doIt: aString)
+!
+
+doIt: aString
+	^ Evaluator evaluate: aString for: self.
+!
+
+printIt: aString
+	| ret |
+	ret := self doIt: aString.
+	Transcript show: ret.
+	window console log: ret.
+! !
+
 !Presentation methodsFor: 'initialization'!
 
 initialize
@@ -170,6 +187,13 @@ initialize
 	shouldGenerateToc := true.
 	generatedTitleAt := 1.
 	generatedTocAt := 2.
+	
+	window addEventListener: 'keypress' do: [ :event |
+		(event charCode == 4) ifTrue: [ "Ctrl+d"
+			| selectedText |
+			selectedText := window getSelection toString.
+			(selectedText isEmpty) ifFalse: [
+				self alertIt: selectedText]]].
 ! !
 
 !Presentation methodsFor: 'manage slide'!
@@ -205,11 +229,9 @@ generateTitleIfNeeded
 			title: title;
 			shouldAppearInToc: false;
 			addClass: 'title';
-			addText: author;
-			addBr;
-			addText: organization;
-			addBr;
-			addText: presentedAt.
+			addDiv: author class: 'author';
+			addDiv: organization class: 'organization';
+			addDiv: presentedAt class: 'presented-at'.
 		self addSlide: titleSlide beforeIndex: generatedTitleAt.
 	].
 !
@@ -235,23 +257,23 @@ tenka1AltJs2014
 	"Build a presentation for tenka 1 altJS conf"
 	| presentation slide |
 	presentation := Presentation new
-		title: 'Amber Smalltalk';
+		title: 'Amber';
 		author: 'あんどうやすし';
 		organization: '株式会社ノハナ';
 		presentedAt: '2014-06-08'.
 	presentation.
 	
-	slide := Slide new
-		title: '最初のページ';
-		addText: 'ご挨拶'.
-	slide addBr.
-	slide addText: '二行目'.
-	slide addBr.
-	slide add: [ :html |
-		html button with: 'ボタン'.
-	].
-	presentation addSlide: slide.
+	presentation addSlide: (Slide new
+		title: 'What''s Amber?';
+		addTextBr: 'Amber';
+		addTextBr: '= Jtalk';
+		addText: '= "J"avaScript Small"talk"').
 	
+	presentation addSlide: (Slide new
+		title: 'What''s Smalltalk?';
+		addTextBr: 'Smalltalk';
+		addText: '= Language + Libraries + IDE'). 
+		
 	slide := Slide new
 		title: '次のページ';
 		addText: '説明'.

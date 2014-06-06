@@ -121,7 +121,7 @@ protocol: 'rendering',
 fn: function (){
 var self=this;
 return smalltalk.withContext(function($ctx1) { 
-var $2,$1,$3;
+var $2,$1,$6,$5,$4,$3;
 _st(window)._addEventListener_do_("keypress",(function(event){
 return smalltalk.withContext(function($ctx2) {
 $2=_st(event)._charCode();
@@ -131,15 +131,20 @@ $ctx2.sendIdx["=="]=1;
 if(smalltalk.assert($1)){
 self._movePrev();
 };
-$3=_st(_st(event)._charCode()).__eq_eq((110));
+$6=_st(event)._charCode();
+$ctx2.sendIdx["charCode"]=2;
+$5=_st($6).__eq_eq((110));
+$4=_st($5).__or(_st(event)._charCode());
+$3=_st($4).__eq_eq((13));
+$ctx2.sendIdx["=="]=2;
 if(smalltalk.assert($3)){
 return self._moveNext();
 };
 }, function($ctx2) {$ctx2.fillBlock({event:event},$ctx1,1)})}));
 return self}, function($ctx1) {$ctx1.fill(self,"setupEventHandler",{},globals.PagenatorWidget)})},
 args: [],
-source: "setupEventHandler\x0a\x09window addEventListener: 'keypress' do: [ :event |\x0a\x09\x09(event charCode == 112) ifTrue: [ self movePrev ].\x0a\x09\x09(event charCode == 110) ifTrue: [ self moveNext ]].",
-messageSends: ["addEventListener:do:", "ifTrue:", "==", "charCode", "movePrev", "moveNext"],
+source: "setupEventHandler\x0a\x09window addEventListener: 'keypress' do: [ :event |\x0a\x09\x09(event charCode == 112) ifTrue: [ self movePrev ].\x0a\x09\x09(event charCode == 110 | event charCode == 13) ifTrue: [ self moveNext ]].",
+messageSends: ["addEventListener:do:", "ifTrue:", "==", "charCode", "movePrev", "|", "moveNext"],
 referencedClasses: []
 }),
 globals.PagenatorWidget);
@@ -209,6 +214,22 @@ return self}, function($ctx1) {$ctx1.fill(self,"addSlide:beforeIndex:",{aSlide:a
 args: ["aSlide", "index"],
 source: "addSlide: aSlide beforeIndex: index\x0a\x09aSlide presentation: self.\x0a\x09slides add: aSlide beforeIndex: index.",
 messageSends: ["presentation:", "add:beforeIndex:"],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "alertIt:",
+protocol: 'evaluating',
+fn: function (aString){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+_st(window)._alert_(self._doIt_(aString));
+return self}, function($ctx1) {$ctx1.fill(self,"alertIt:",{aString:aString},globals.Presentation)})},
+args: ["aString"],
+source: "alertIt: aString\x0a\x09window alert: (self doIt: aString)",
+messageSends: ["alert:", "doIt:"],
 referencedClasses: []
 }),
 globals.Presentation);
@@ -298,6 +319,25 @@ globals.Presentation);
 
 smalltalk.addMethod(
 smalltalk.method({
+selector: "doIt:",
+protocol: 'evaluating',
+fn: function (aString){
+var self=this;
+function $Evaluator(){return globals.Evaluator||(typeof Evaluator=="undefined"?nil:Evaluator)}
+return smalltalk.withContext(function($ctx1) { 
+var $1;
+$1=_st($Evaluator())._evaluate_for_(aString,self);
+return $1;
+}, function($ctx1) {$ctx1.fill(self,"doIt:",{aString:aString},globals.Presentation)})},
+args: ["aString"],
+source: "doIt: aString\x0a\x09^ Evaluator evaluate: aString for: self.",
+messageSends: ["evaluate:for:"],
+referencedClasses: ["Evaluator"]
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
 selector: "generateTitle",
 protocol: 'manage slide',
 fn: function (){
@@ -331,22 +371,19 @@ $2=_st($Slide())._new();
 _st($2)._title_(self["@title"]);
 _st($2)._shouldAppearInToc_(false);
 _st($2)._addClass_("title");
-_st($2)._addText_(self["@author"]);
-$ctx1.sendIdx["addText:"]=1;
-_st($2)._addBr();
-$ctx1.sendIdx["addBr"]=1;
-_st($2)._addText_(self["@organization"]);
-$ctx1.sendIdx["addText:"]=2;
-_st($2)._addBr();
-$3=_st($2)._addText_(self["@presentedAt"]);
+_st($2)._addDiv_class_(self["@author"],"author");
+$ctx1.sendIdx["addDiv:class:"]=1;
+_st($2)._addDiv_class_(self["@organization"],"organization");
+$ctx1.sendIdx["addDiv:class:"]=2;
+$3=_st($2)._addDiv_class_(self["@presentedAt"],"presented-at");
 titleSlide=$3;
 titleSlide;
 self._addSlide_beforeIndex_(titleSlide,self["@generatedTitleAt"]);
 };
 return self}, function($ctx1) {$ctx1.fill(self,"generateTitleIfNeeded",{},globals.Presentation)})},
 args: [],
-source: "generateTitleIfNeeded\x0a\x09shouldGenerateTitle ifTrue: [\x0a\x09\x09| titleSlide |\x0a\x09\x09titleSlide := Slide new\x0a\x09\x09\x09title: title;\x0a\x09\x09\x09shouldAppearInToc: false;\x0a\x09\x09\x09addClass: 'title';\x0a\x09\x09\x09addText: author;\x0a\x09\x09\x09addBr;\x0a\x09\x09\x09addText: organization;\x0a\x09\x09\x09addBr;\x0a\x09\x09\x09addText: presentedAt.\x0a\x09\x09self addSlide: titleSlide beforeIndex: generatedTitleAt.\x0a\x09].",
-messageSends: ["ifTrue:", "title:", "new", "shouldAppearInToc:", "addClass:", "addText:", "addBr", "addSlide:beforeIndex:"],
+source: "generateTitleIfNeeded\x0a\x09shouldGenerateTitle ifTrue: [\x0a\x09\x09| titleSlide |\x0a\x09\x09titleSlide := Slide new\x0a\x09\x09\x09title: title;\x0a\x09\x09\x09shouldAppearInToc: false;\x0a\x09\x09\x09addClass: 'title';\x0a\x09\x09\x09addDiv: author class: 'author';\x0a\x09\x09\x09addDiv: organization class: 'organization';\x0a\x09\x09\x09addDiv: presentedAt class: 'presented-at'.\x0a\x09\x09self addSlide: titleSlide beforeIndex: generatedTitleAt.\x0a\x09].",
+messageSends: ["ifTrue:", "title:", "new", "shouldAppearInToc:", "addClass:", "addDiv:class:", "addSlide:beforeIndex:"],
 referencedClasses: ["Slide"]
 }),
 globals.Presentation);
@@ -413,6 +450,8 @@ selector: "initialize",
 protocol: 'initialization',
 fn: function (){
 var self=this;
+return smalltalk.withContext(function($ctx1) { 
+var $1,$2;
 self["@slides"]=[];
 self["@cursor"]=(0);
 self["@tocTitle"]="Abstract";
@@ -420,10 +459,23 @@ self["@shouldGenerateTitle"]=true;
 self["@shouldGenerateToc"]=true;
 self["@generatedTitleAt"]=(1);
 self["@generatedTocAt"]=(2);
-return self},
+_st(window)._addEventListener_do_("keypress",(function(event){
+return smalltalk.withContext(function($ctx2) {
+$1=_st(_st(event)._charCode()).__eq_eq((4));
+if(smalltalk.assert($1)){
+var selectedText;
+selectedText=_st(_st(window)._getSelection())._toString();
+selectedText;
+$2=_st(selectedText)._isEmpty();
+if(! smalltalk.assert($2)){
+return self._alertIt_(selectedText);
+};
+};
+}, function($ctx2) {$ctx2.fillBlock({event:event},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"initialize",{},globals.Presentation)})},
 args: [],
-source: "initialize\x0a\x09slides := #().\x0a\x09cursor := 0.\x0a\x09tocTitle := 'Abstract'.\x0a\x09shouldGenerateTitle := true.\x0a\x09shouldGenerateToc := true.\x0a\x09generatedTitleAt := 1.\x0a\x09generatedTocAt := 2.\x0a\x09",
-messageSends: [],
+source: "initialize\x0a\x09slides := #().\x0a\x09cursor := 0.\x0a\x09tocTitle := 'Abstract'.\x0a\x09shouldGenerateTitle := true.\x0a\x09shouldGenerateToc := true.\x0a\x09generatedTitleAt := 1.\x0a\x09generatedTocAt := 2.\x0a\x09\x0a\x09window addEventListener: 'keypress' do: [ :event |\x0a\x09\x09(event charCode == 4) ifTrue: [ \x22Ctrl+d\x22\x0a\x09\x09\x09| selectedText |\x0a\x09\x09\x09selectedText := window getSelection toString.\x0a\x09\x09\x09(selectedText isEmpty) ifFalse: [\x0a\x09\x09\x09\x09self alertIt: selectedText]]].",
+messageSends: ["addEventListener:do:", "ifTrue:", "==", "charCode", "toString", "getSelection", "ifFalse:", "isEmpty", "alertIt:"],
 referencedClasses: []
 }),
 globals.Presentation);
@@ -561,6 +613,26 @@ args: ["anObject"],
 source: "presentedAt: anObject\x0a\x09presentedAt := anObject",
 messageSends: [],
 referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "printIt:",
+protocol: 'evaluating',
+fn: function (aString){
+var self=this;
+var ret;
+function $Transcript(){return globals.Transcript||(typeof Transcript=="undefined"?nil:Transcript)}
+return smalltalk.withContext(function($ctx1) { 
+ret=self._doIt_(aString);
+_st($Transcript())._show_(ret);
+_st(_st(window)._console())._log_(ret);
+return self}, function($ctx1) {$ctx1.fill(self,"printIt:",{aString:aString,ret:ret},globals.Presentation)})},
+args: ["aString"],
+source: "printIt: aString\x0a\x09| ret |\x0a\x09ret := self doIt: aString.\x0a\x09Transcript show: ret.\x0a\x09window console log: ret.",
+messageSends: ["doIt:", "show:", "log:", "console"],
+referencedClasses: ["Transcript"]
 }),
 globals.Presentation);
 
@@ -711,53 +783,60 @@ var presentation,slide;
 function $Presentation(){return globals.Presentation||(typeof Presentation=="undefined"?nil:Presentation)}
 function $Slide(){return globals.Slide||(typeof Slide=="undefined"?nil:Slide)}
 return smalltalk.withContext(function($ctx1) { 
-var $1,$2,$3,$4,$5,$6,$7,$8,$9;
+var $1,$2,$3,$5,$6,$4,$7,$9,$10,$8,$11,$12,$13,$14,$15;
 $1=_st($Presentation())._new();
 $ctx1.sendIdx["new"]=1;
-_st($1)._title_("Amber Smalltalk");
+_st($1)._title_("Amber");
 $ctx1.sendIdx["title:"]=1;
 _st($1)._author_("あんどうやすし");
 _st($1)._organization_("株式会社ノハナ");
 $2=_st($1)._presentedAt_("2014-06-08");
 presentation=$2;
-$3=_st($Slide())._new();
-$ctx1.sendIdx["new"]=2;
-_st($3)._title_("最初のページ");
-$ctx1.sendIdx["title:"]=2;
-$4=_st($3)._addText_("ご挨拶");
-$ctx1.sendIdx["addText:"]=1;
-slide=$4;
-_st(slide)._addBr();
-$ctx1.sendIdx["addBr"]=1;
-_st(slide)._addText_("二行目");
-$ctx1.sendIdx["addText:"]=2;
-_st(slide)._addBr();
-_st(slide)._add_((function(html){
-return smalltalk.withContext(function($ctx2) {
-return _st(_st(html)._button())._with_("ボタン");
-}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
-_st(presentation)._addSlide_(slide);
-$ctx1.sendIdx["addSlide:"]=1;
+$3=presentation;
 $5=_st($Slide())._new();
+$ctx1.sendIdx["new"]=2;
+_st($5)._title_("What's Amber?");
+$ctx1.sendIdx["title:"]=2;
+_st($5)._addTextBr_("Amber");
+$ctx1.sendIdx["addTextBr:"]=1;
+_st($5)._addTextBr_("= Jtalk");
+$ctx1.sendIdx["addTextBr:"]=2;
+$6=_st($5)._addText_("= \x22J\x22avaScript Small\x22talk\x22");
+$ctx1.sendIdx["addText:"]=1;
+$4=$6;
+_st($3)._addSlide_($4);
+$ctx1.sendIdx["addSlide:"]=1;
+$7=presentation;
+$9=_st($Slide())._new();
 $ctx1.sendIdx["new"]=3;
-_st($5)._title_("次のページ");
+_st($9)._title_("What's Smalltalk?");
 $ctx1.sendIdx["title:"]=3;
-$6=_st($5)._addText_("説明");
-$ctx1.sendIdx["addText:"]=3;
-slide=$6;
-_st(presentation)._addSlide_(slide);
+_st($9)._addTextBr_("Smalltalk");
+$10=_st($9)._addText_("= Language + Libraries + IDE");
+$ctx1.sendIdx["addText:"]=2;
+$8=$10;
+_st($7)._addSlide_($8);
 $ctx1.sendIdx["addSlide:"]=2;
-$7=_st($Slide())._new();
-_st($7)._title_("最後のページ");
-$8=_st($7)._addText_("まとめ");
-slide=$8;
+$11=_st($Slide())._new();
+$ctx1.sendIdx["new"]=4;
+_st($11)._title_("次のページ");
+$ctx1.sendIdx["title:"]=4;
+$12=_st($11)._addText_("説明");
+$ctx1.sendIdx["addText:"]=3;
+slide=$12;
 _st(presentation)._addSlide_(slide);
-$9=presentation;
-return $9;
+$ctx1.sendIdx["addSlide:"]=3;
+$13=_st($Slide())._new();
+_st($13)._title_("最後のページ");
+$14=_st($13)._addText_("まとめ");
+slide=$14;
+_st(presentation)._addSlide_(slide);
+$15=presentation;
+return $15;
 }, function($ctx1) {$ctx1.fill(self,"tenka1AltJs2014",{presentation:presentation,slide:slide},globals.Presentation.klass)})},
 args: [],
-source: "tenka1AltJs2014\x0a\x09\x22Build a presentation for tenka 1 altJS conf\x22\x0a\x09| presentation slide |\x0a\x09presentation := Presentation new\x0a\x09\x09title: 'Amber Smalltalk';\x0a\x09\x09author: 'あんどうやすし';\x0a\x09\x09organization: '株式会社ノハナ';\x0a\x09\x09presentedAt: '2014-06-08'.\x0a\x09presentation.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '最初のページ';\x0a\x09\x09addText: 'ご挨拶'.\x0a\x09slide addBr.\x0a\x09slide addText: '二行目'.\x0a\x09slide addBr.\x0a\x09slide add: [ :html |\x0a\x09\x09html button with: 'ボタン'.\x0a\x09].\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '次のページ';\x0a\x09\x09addText: '説明'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '最後のページ';\x0a\x09\x09addText: 'まとめ'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09^ presentation",
-messageSends: ["title:", "new", "author:", "organization:", "presentedAt:", "addText:", "addBr", "add:", "with:", "button", "addSlide:"],
+source: "tenka1AltJs2014\x0a\x09\x22Build a presentation for tenka 1 altJS conf\x22\x0a\x09| presentation slide |\x0a\x09presentation := Presentation new\x0a\x09\x09title: 'Amber';\x0a\x09\x09author: 'あんどうやすし';\x0a\x09\x09organization: '株式会社ノハナ';\x0a\x09\x09presentedAt: '2014-06-08'.\x0a\x09presentation.\x0a\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'What''s Amber?';\x0a\x09\x09addTextBr: 'Amber';\x0a\x09\x09addTextBr: '= Jtalk';\x0a\x09\x09addText: '= \x22J\x22avaScript Small\x22talk\x22').\x0a\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'What''s Smalltalk?';\x0a\x09\x09addTextBr: 'Smalltalk';\x0a\x09\x09addText: '= Language + Libraries + IDE'). \x0a\x09\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '次のページ';\x0a\x09\x09addText: '説明'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '最後のページ';\x0a\x09\x09addText: 'まとめ'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09^ presentation",
+messageSends: ["title:", "new", "author:", "organization:", "presentedAt:", "addSlide:", "addTextBr:", "addText:"],
 referencedClasses: ["Presentation", "Slide"]
 }),
 globals.Presentation.klass);

@@ -38,8 +38,21 @@ body {
 }
 
 .title h1 {
+  font-size:4rem;
   border: none;
   margin:12vh 0;
+}
+
+.title .author {
+}
+
+.title .organization {
+  font-size:2rem;
+}
+
+.title .presented-at {
+  margin-top:1.5rem;
+  font-size:1.5rem;
 }
 
 button.paginate {
