@@ -1,4 +1,4 @@
-define("Slide/Slide", ["amber_vm/smalltalk", "amber_vm/nil", "amber_vm/_st", "amber_vm/globals", "amber_core/Kernel-Objects", "amber_core/Web"], function(smalltalk,nil,_st, globals){
+define("Slide/Slide", ["amber_vm/smalltalk", "amber_vm/nil", "amber_vm/_st", "amber_vm/globals", "amber_core/Web", "amber_core/Kernel-Objects"], function(smalltalk,nil,_st, globals){
 smalltalk.addPackage('Slide');
 smalltalk.packages["Slide"].transport = {"type":"amd","amdNamespace":"Slide"};
 
@@ -85,28 +85,31 @@ _st(html)._with_((function(){
 return smalltalk.withContext(function($ctx2) {
 $1=_st(html)._button();
 $ctx2.sendIdx["button"]=1;
+_st($1)._class_("prev paginate");
+$ctx2.sendIdx["class:"]=1;
 _st($1)._onClick_((function(){
 return smalltalk.withContext(function($ctx3) {
 return self._movePrev();
 }, function($ctx3) {$ctx3.fillBlock({},$ctx2,2)})}));
 $ctx2.sendIdx["onClick:"]=1;
-$2=_st($1)._with_("Prev");
+$2=_st($1)._with_("<");
 $ctx2.sendIdx["with:"]=2;
 $2;
 $3=_st(html)._button();
+_st($3)._class_("next paginate");
 _st($3)._onClick_((function(){
 return smalltalk.withContext(function($ctx3) {
 return self._moveNext();
 }, function($ctx3) {$ctx3.fillBlock({},$ctx2,3)})}));
-$4=_st($3)._with_("Next");
+$4=_st($3)._with_(">");
 return $4;
 }, function($ctx2) {$ctx2.fillBlock({},$ctx1,1)})}));
 $ctx1.sendIdx["with:"]=1;
 return self;
 }, function($ctx1) {$ctx1.fill(self,"renderOn:",{html:html},globals.PagenatorWidget)})},
 args: ["html"],
-source: "renderOn: html\x0a\x09html\x0a\x09\x09with: [\x0a\x09\x09\x09html button onClick: [self movePrev];\x0a\x09\x09\x09\x09with: 'Prev'.\x0a\x09\x09\x09html button onClick: [self moveNext];\x0a\x09\x09\x09\x09with: 'Next'.\x0a\x09\x09].\x0a\x09^ self",
-messageSends: ["with:", "onClick:", "button", "movePrev", "moveNext"],
+source: "renderOn: html\x0a\x09html\x0a\x09\x09with: [\x0a\x09\x09\x09html button\x0a\x09\x09\x09\x09class: 'prev paginate'; \x0a\x09\x09\x09\x09onClick: [self movePrev];\x0a\x09\x09\x09\x09with: '<'.\x0a\x09\x09\x09html button\x0a\x09\x09\x09\x09class: 'next paginate';\x0a\x09\x09\x09\x09onClick: [self moveNext];\x0a\x09\x09\x09\x09with: '>'.\x09\x0a\x09\x09].\x0a\x09^ self",
+messageSends: ["with:", "class:", "button", "onClick:", "movePrev", "moveNext"],
 referencedClasses: []
 }),
 globals.PagenatorWidget);

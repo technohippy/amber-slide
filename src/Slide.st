@@ -40,10 +40,14 @@ movePrev
 renderOn: html
 	html
 		with: [
-			html button onClick: [self movePrev];
-				with: 'Prev'.
-			html button onClick: [self moveNext];
-				with: 'Next'.
+			html button
+				class: 'prev paginate'; 
+				onClick: [self movePrev];
+				with: '<'.
+			html button
+				class: 'next paginate';
+				onClick: [self moveNext];
+				with: '>'.	
 		].
 	^ self
 ! !

@@ -1,0 +1,42 @@
+* {
+  margin:0;
+  padding:0;
+}
+
+body {
+  background:black;
+}
+
+.slide {
+  position:absolute;
+  top:0;
+  left:0;
+  width:90%;
+  height:90%;
+  background:white;
+  margin:3% 5%;
+  border-radius:10px;
+}
+
+.slide h1 {
+  border-bottom:1px solid black;
+  padding:5px 20px;
+  font-size:3rem;
+}
+
+button.paginate {
+  position:absolute;
+  top:0;
+  height:100%;
+  width:5%;
+  font-size:3rem;
+  color:white;
+  background:rgba(1,1,1,0);
+  border:none;
+}
+button.prev {
+  left:0;
+}
+button.next {
+  right:0;
+}
