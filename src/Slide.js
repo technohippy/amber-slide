@@ -81,6 +81,7 @@ fn: function (html){
 var self=this;
 return smalltalk.withContext(function($ctx1) { 
 var $1,$2,$3,$4;
+self._setupEventHandler();
 _st(html)._with_((function(){
 return smalltalk.withContext(function($ctx2) {
 $1=_st(html)._button();
@@ -105,11 +106,40 @@ $4=_st($3)._with_(">");
 return $4;
 }, function($ctx2) {$ctx2.fillBlock({},$ctx1,1)})}));
 $ctx1.sendIdx["with:"]=1;
-return self;
-}, function($ctx1) {$ctx1.fill(self,"renderOn:",{html:html},globals.PagenatorWidget)})},
+return self}, function($ctx1) {$ctx1.fill(self,"renderOn:",{html:html},globals.PagenatorWidget)})},
 args: ["html"],
-source: "renderOn: html\x0a\x09html\x0a\x09\x09with: [\x0a\x09\x09\x09html button\x0a\x09\x09\x09\x09class: 'prev paginate'; \x0a\x09\x09\x09\x09onClick: [self movePrev];\x0a\x09\x09\x09\x09with: '<'.\x0a\x09\x09\x09html button\x0a\x09\x09\x09\x09class: 'next paginate';\x0a\x09\x09\x09\x09onClick: [self moveNext];\x0a\x09\x09\x09\x09with: '>'.\x09\x0a\x09\x09].\x0a\x09^ self",
-messageSends: ["with:", "class:", "button", "onClick:", "movePrev", "moveNext"],
+source: "renderOn: html\x0a\x09self setupEventHandler.\x0a\x09\x0a\x09html\x0a\x09\x09with: [\x0a\x09\x09\x09html button\x0a\x09\x09\x09\x09class: 'prev paginate'; \x0a\x09\x09\x09\x09onClick: [self movePrev];\x0a\x09\x09\x09\x09with: '<'.\x0a\x09\x09\x09html button\x0a\x09\x09\x09\x09class: 'next paginate';\x0a\x09\x09\x09\x09onClick: [self moveNext];\x0a\x09\x09\x09\x09with: '>'].",
+messageSends: ["setupEventHandler", "with:", "class:", "button", "onClick:", "movePrev", "moveNext"],
+referencedClasses: []
+}),
+globals.PagenatorWidget);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "setupEventHandler",
+protocol: 'rendering',
+fn: function (){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+var $2,$1,$3;
+_st(window)._addEventListener_do_("keypress",(function(event){
+return smalltalk.withContext(function($ctx2) {
+$2=_st(event)._charCode();
+$ctx2.sendIdx["charCode"]=1;
+$1=_st($2).__eq_eq((112));
+$ctx2.sendIdx["=="]=1;
+if(smalltalk.assert($1)){
+self._movePrev();
+};
+$3=_st(_st(event)._charCode()).__eq_eq((110));
+if(smalltalk.assert($3)){
+return self._moveNext();
+};
+}, function($ctx2) {$ctx2.fillBlock({event:event},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"setupEventHandler",{},globals.PagenatorWidget)})},
+args: [],
+source: "setupEventHandler\x0a\x09window addEventListener: 'keypress' do: [ :event |\x0a\x09\x09(event charCode == 112) ifTrue: [ self movePrev ].\x0a\x09\x09(event charCode == 110) ifTrue: [ self moveNext ]].",
+messageSends: ["addEventListener:do:", "ifTrue:", "==", "charCode", "movePrev", "moveNext"],
 referencedClasses: []
 }),
 globals.PagenatorWidget);
@@ -148,7 +178,7 @@ globals.PagenatorWidget);
 
 
 
-smalltalk.addClass('Presentation', globals.Object, ['widget', 'slides', 'cursor', 'title', 'author', 'organization', 'presentedAt', 'shouldGenerateTitle', 'shouldGenerateToc'], 'Slide');
+smalltalk.addClass('Presentation', globals.Object, ['widget', 'slides', 'cursor', 'title', 'author', 'organization', 'presentedAt', 'shouldGenerateTitle', 'shouldGenerateToc', 'tocTitle', 'generatedTitleAt', 'generatedTocAt'], 'Slide');
 smalltalk.addMethod(
 smalltalk.method({
 selector: "addSlide:",
@@ -162,6 +192,23 @@ return self}, function($ctx1) {$ctx1.fill(self,"addSlide:",{aSlide:aSlide},globa
 args: ["aSlide"],
 source: "addSlide: aSlide\x0a\x09aSlide presentation: self.\x0a\x09slides add: aSlide.",
 messageSends: ["presentation:", "add:"],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addSlide:beforeIndex:",
+protocol: 'manage slide',
+fn: function (aSlide,index){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+_st(aSlide)._presentation_(self);
+_st(self["@slides"])._add_beforeIndex_(aSlide,index);
+return self}, function($ctx1) {$ctx1.fill(self,"addSlide:beforeIndex:",{aSlide:aSlide,index:index},globals.Presentation)})},
+args: ["aSlide", "index"],
+source: "addSlide: aSlide beforeIndex: index\x0a\x09aSlide presentation: self.\x0a\x09slides add: aSlide beforeIndex: index.",
+messageSends: ["presentation:", "add:beforeIndex:"],
 referencedClasses: []
 }),
 globals.Presentation);
@@ -211,7 +258,7 @@ $1=_st(self["@slides"])._at_(_st(self._cursor()).__plus((1)));
 return $1;
 }, function($ctx1) {$ctx1.fill(self,"currentSlide",{},globals.Presentation)})},
 args: [],
-source: "currentSlide\x0a\x09^ slides at: self cursor + 1.",
+source: "currentSlide\x0a\x09^ slides at: self cursor + 1",
 messageSends: ["at:", "+", "cursor"],
 referencedClasses: []
 }),
@@ -270,6 +317,80 @@ globals.Presentation);
 
 smalltalk.addMethod(
 smalltalk.method({
+selector: "generateTitleIfNeeded",
+protocol: 'private',
+fn: function (){
+var self=this;
+function $Slide(){return globals.Slide||(typeof Slide=="undefined"?nil:Slide)}
+return smalltalk.withContext(function($ctx1) { 
+var $1,$2,$3;
+$1=self["@shouldGenerateTitle"];
+if(smalltalk.assert($1)){
+var titleSlide;
+$2=_st($Slide())._new();
+_st($2)._title_(self["@title"]);
+_st($2)._shouldAppearInToc_(false);
+_st($2)._addClass_("title");
+_st($2)._addText_(self["@author"]);
+$ctx1.sendIdx["addText:"]=1;
+_st($2)._addBr();
+$ctx1.sendIdx["addBr"]=1;
+_st($2)._addText_(self["@organization"]);
+$ctx1.sendIdx["addText:"]=2;
+_st($2)._addBr();
+$3=_st($2)._addText_(self["@presentedAt"]);
+titleSlide=$3;
+titleSlide;
+self._addSlide_beforeIndex_(titleSlide,self["@generatedTitleAt"]);
+};
+return self}, function($ctx1) {$ctx1.fill(self,"generateTitleIfNeeded",{},globals.Presentation)})},
+args: [],
+source: "generateTitleIfNeeded\x0a\x09shouldGenerateTitle ifTrue: [\x0a\x09\x09| titleSlide |\x0a\x09\x09titleSlide := Slide new\x0a\x09\x09\x09title: title;\x0a\x09\x09\x09shouldAppearInToc: false;\x0a\x09\x09\x09addClass: 'title';\x0a\x09\x09\x09addText: author;\x0a\x09\x09\x09addBr;\x0a\x09\x09\x09addText: organization;\x0a\x09\x09\x09addBr;\x0a\x09\x09\x09addText: presentedAt.\x0a\x09\x09self addSlide: titleSlide beforeIndex: generatedTitleAt.\x0a\x09].",
+messageSends: ["ifTrue:", "title:", "new", "shouldAppearInToc:", "addClass:", "addText:", "addBr", "addSlide:beforeIndex:"],
+referencedClasses: ["Slide"]
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "generateTocIfNeeded",
+protocol: 'private',
+fn: function (){
+var self=this;
+function $Slide(){return globals.Slide||(typeof Slide=="undefined"?nil:Slide)}
+return smalltalk.withContext(function($ctx1) { 
+var $1,$2,$3,$4;
+$1=self["@shouldGenerateToc"];
+if(smalltalk.assert($1)){
+var titles,tocSlide;
+titles=[];
+titles;
+_st(self["@slides"])._do_((function(slide){
+return smalltalk.withContext(function($ctx2) {
+$2=_st(slide)._shouldAppearInToc();
+if(smalltalk.assert($2)){
+return _st(titles)._add_(_st(slide)._title());
+};
+}, function($ctx2) {$ctx2.fillBlock({slide:slide},$ctx1,2)})}));
+$3=_st($Slide())._new();
+_st($3)._title_(self["@tocTitle"]);
+_st($3)._addClass_("toc");
+_st($3)._shouldAppearInToc_(false);
+$4=_st($3)._addOrderedList_(titles);
+tocSlide=$4;
+tocSlide;
+self._addSlide_beforeIndex_(tocSlide,self["@generatedTocAt"]);
+};
+return self}, function($ctx1) {$ctx1.fill(self,"generateTocIfNeeded",{},globals.Presentation)})},
+args: [],
+source: "generateTocIfNeeded\x0a\x09shouldGenerateToc ifTrue: [\x0a\x09\x09| titles tocSlide |\x09\x0a\x09\x09titles := #().\x0a\x09\x09slides do: [ :slide |\x0a\x09\x09\x09slide shouldAppearInToc ifTrue: [titles add: slide title]].\x0a\x09\x09tocSlide := Slide new\x0a\x09\x09\x09title: tocTitle;\x0a\x09\x09\x09addClass: 'toc';\x0a\x09\x09\x09shouldAppearInToc: false;\x0a\x09\x09\x09addOrderedList: titles.\x0a\x09\x09self addSlide: tocSlide beforeIndex: generatedTocAt.\x0a\x09].",
+messageSends: ["ifTrue:", "do:", "shouldAppearInToc", "add:", "title", "title:", "new", "addClass:", "shouldAppearInToc:", "addOrderedList:", "addSlide:beforeIndex:"],
+referencedClasses: ["Slide"]
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
 selector: "hasNext",
 protocol: 'actions',
 fn: function (){
@@ -294,9 +415,14 @@ fn: function (){
 var self=this;
 self["@slides"]=[];
 self["@cursor"]=(0);
+self["@tocTitle"]="Abstract";
+self["@shouldGenerateTitle"]=true;
+self["@shouldGenerateToc"]=true;
+self["@generatedTitleAt"]=(1);
+self["@generatedTocAt"]=(2);
 return self},
 args: [],
-source: "initialize\x0a\x09slides := #().\x0a\x09cursor := 0.",
+source: "initialize\x0a\x09slides := #().\x0a\x09cursor := 0.\x0a\x09tocTitle := 'Abstract'.\x0a\x09shouldGenerateTitle := true.\x0a\x09shouldGenerateToc := true.\x0a\x09generatedTitleAt := 1.\x0a\x09generatedTocAt := 2.\x0a\x09",
 messageSends: [],
 referencedClasses: []
 }),
@@ -328,7 +454,7 @@ self["@cursor"];
 };
 return self}, function($ctx1) {$ctx1.fill(self,"moveNext",{},globals.Presentation)})},
 args: [],
-source: "moveNext\x0a\x09(self hasNext)\x0a\x09\x09ifTrue: [\x0a\x09\x09\x09(cursor + 1 < slides size)\x0a\x09\x09\x09\x09ifTrue: [\x0a\x09\x09\x09\x09\x09cursor := cursor + 1.\x0a\x09\x09\x09\x09]\x0a\x09\x09\x09\x09ifFalse: [\x0a\x09\x09\x09\x09\x09cursor := 0.\x0a\x09\x09\x09\x09]\x0a\x09\x09]\x0a\x09\x09ifFalse: [\x0a\x09\x09\x09cursor := 0.\x0a\x09\x09].",
+source: "moveNext\x0a\x09(self hasNext)\x0a\x09\x09ifTrue: [\x0a\x09\x09\x09(cursor + 1 < slides size)\x0a\x09\x09\x09\x09ifTrue: [ cursor := cursor + 1 ]\x0a\x09\x09\x09\x09ifFalse: [ cursor := 0 ]]\x0a\x09\x09ifFalse: [\x0a\x09\x09\x09cursor := 0 ].",
 messageSends: ["ifTrue:ifFalse:", "hasNext", "<", "+", "size"],
 referencedClasses: []
 }),
@@ -353,7 +479,7 @@ self["@cursor"];
 };
 return self}, function($ctx1) {$ctx1.fill(self,"movePrev",{},globals.Presentation)})},
 args: [],
-source: "movePrev\x0a\x09(0 < cursor)\x0a\x09\x09ifTrue: [\x0a\x09\x09\x09cursor := cursor - 1.\x0a\x09\x09] \x0a\x09\x09ifFalse: [\x0a\x09\x09\x09cursor := slides size - 1.\x0a\x09\x09].",
+source: "movePrev\x0a\x09(0 < cursor)\x0a\x09\x09ifTrue: [ cursor := cursor - 1 ] \x0a\x09\x09ifFalse: [ cursor := slides size - 1 ]",
 messageSends: ["ifTrue:ifFalse:", "<", "-", "size"],
 referencedClasses: []
 }),
@@ -368,7 +494,7 @@ var self=this;
 self["@cursor"]=aNumber;
 return self},
 args: ["aNumber"],
-source: "moveTo: aNumber\x0a\x09cursor := aNumber.",
+source: "moveTo: aNumber\x0a\x09cursor := aNumber",
 messageSends: [],
 referencedClasses: []
 }),
@@ -457,21 +583,6 @@ globals.Presentation);
 
 smalltalk.addMethod(
 smalltalk.method({
-selector: "setup",
-protocol: 'actions',
-fn: function (){
-var self=this;
-return self;
-},
-args: [],
-source: "setup\x0a\x09\x0a\x09^ self",
-messageSends: [],
-referencedClasses: []
-}),
-globals.Presentation);
-
-smalltalk.addMethod(
-smalltalk.method({
 selector: "showCurrentSlide",
 protocol: 'actions',
 fn: function (){
@@ -480,7 +591,7 @@ return smalltalk.withContext(function($ctx1) {
 _st(self._currentSlide())._show();
 return self}, function($ctx1) {$ctx1.fill(self,"showCurrentSlide",{},globals.Presentation)})},
 args: [],
-source: "showCurrentSlide\x0a\x09self currentSlide show.\x0a\x09\x22\x0a\x09widget renderOn: (HTMLCanvas onJQuery: 'body' asJQuery).\x0a\x09\x22",
+source: "showCurrentSlide\x0a\x09self currentSlide show.",
 messageSends: ["show", "currentSlide"],
 referencedClasses: []
 }),
@@ -512,13 +623,14 @@ var self=this;
 function $PresentationWidget(){return globals.PresentationWidget||(typeof PresentationWidget=="undefined"?nil:PresentationWidget)}
 function $HTMLCanvas(){return globals.HTMLCanvas||(typeof HTMLCanvas=="undefined"?nil:HTMLCanvas)}
 return smalltalk.withContext(function($ctx1) { 
+self._generateTitleIfNeeded();
+self._generateTocIfNeeded();
 self["@widget"]=_st(_st($PresentationWidget())._new())._model_(self);
 _st(self["@widget"])._renderOn_(_st($HTMLCanvas())._onJQuery_("body"._asJQuery()));
-return self;
-}, function($ctx1) {$ctx1.fill(self,"start",{},globals.Presentation)})},
+return self}, function($ctx1) {$ctx1.fill(self,"start",{},globals.Presentation)})},
 args: [],
-source: "start\x0a\x09widget := PresentationWidget new model: self.\x0a\x09widget renderOn: (HTMLCanvas onJQuery: 'body' asJQuery).\x0a\x09^ self",
-messageSends: ["model:", "new", "renderOn:", "onJQuery:", "asJQuery"],
+source: "start\x0a\x09self generateTitleIfNeeded.\x0a\x09self generateTocIfNeeded.\x0a\x09\x0a\x09widget := PresentationWidget new model: self.\x0a\x09widget renderOn: (HTMLCanvas onJQuery: 'body' asJQuery).",
+messageSends: ["generateTitleIfNeeded", "generateTocIfNeeded", "model:", "new", "renderOn:", "onJQuery:", "asJQuery"],
 referencedClasses: ["PresentationWidget", "HTMLCanvas"]
 }),
 globals.Presentation);
@@ -605,15 +717,20 @@ $ctx1.sendIdx["new"]=1;
 _st($1)._title_("Amber Smalltalk");
 $ctx1.sendIdx["title:"]=1;
 _st($1)._author_("あんどうやすし");
-$2=_st($1)._organization_("株式会社ノハナ");
+_st($1)._organization_("株式会社ノハナ");
+$2=_st($1)._presentedAt_("2014-06-08");
 presentation=$2;
 $3=_st($Slide())._new();
 $ctx1.sendIdx["new"]=2;
 _st($3)._title_("最初のページ");
 $ctx1.sendIdx["title:"]=2;
-$4=_st($3)._addContent_("ご挨拶");
-$ctx1.sendIdx["addContent:"]=1;
+$4=_st($3)._addText_("ご挨拶");
+$ctx1.sendIdx["addText:"]=1;
 slide=$4;
+_st(slide)._addBr();
+$ctx1.sendIdx["addBr"]=1;
+_st(slide)._addText_("二行目");
+$ctx1.sendIdx["addText:"]=2;
 _st(slide)._addBr();
 _st(slide)._add_((function(html){
 return smalltalk.withContext(function($ctx2) {
@@ -625,23 +742,22 @@ $5=_st($Slide())._new();
 $ctx1.sendIdx["new"]=3;
 _st($5)._title_("次のページ");
 $ctx1.sendIdx["title:"]=3;
-$6=_st($5)._addContent_("説明");
-$ctx1.sendIdx["addContent:"]=2;
+$6=_st($5)._addText_("説明");
+$ctx1.sendIdx["addText:"]=3;
 slide=$6;
 _st(presentation)._addSlide_(slide);
 $ctx1.sendIdx["addSlide:"]=2;
 $7=_st($Slide())._new();
 _st($7)._title_("最後のページ");
-$8=_st($7)._addContent_("まとめ");
+$8=_st($7)._addText_("まとめ");
 slide=$8;
 _st(presentation)._addSlide_(slide);
-_st(presentation)._setup();
 $9=presentation;
 return $9;
 }, function($ctx1) {$ctx1.fill(self,"tenka1AltJs2014",{presentation:presentation,slide:slide},globals.Presentation.klass)})},
 args: [],
-source: "tenka1AltJs2014\x0a\x09\x22Build a presentation for tenka 1 altJS conf\x22\x0a\x09| presentation slide |\x0a\x09presentation := Presentation new\x0a\x09\x09title: 'Amber Smalltalk';\x0a\x09\x09author: 'あんどうやすし';\x0a\x09\x09organization: '株式会社ノハナ'.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '最初のページ';\x0a\x09\x09addContent: 'ご挨拶'.\x0a\x09slide addBr.\x0a\x09slide add: [ :html |\x0a\x09\x09html button with: 'ボタン'.\x0a\x09].\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '次のページ';\x0a\x09\x09addContent: '説明'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '最後のページ';\x0a\x09\x09addContent: 'まとめ'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09presentation setup.\x0a\x09\x0a\x09^ presentation",
-messageSends: ["title:", "new", "author:", "organization:", "addContent:", "addBr", "add:", "with:", "button", "addSlide:", "setup"],
+source: "tenka1AltJs2014\x0a\x09\x22Build a presentation for tenka 1 altJS conf\x22\x0a\x09| presentation slide |\x0a\x09presentation := Presentation new\x0a\x09\x09title: 'Amber Smalltalk';\x0a\x09\x09author: 'あんどうやすし';\x0a\x09\x09organization: '株式会社ノハナ';\x0a\x09\x09presentedAt: '2014-06-08'.\x0a\x09presentation.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '最初のページ';\x0a\x09\x09addText: 'ご挨拶'.\x0a\x09slide addBr.\x0a\x09slide addText: '二行目'.\x0a\x09slide addBr.\x0a\x09slide add: [ :html |\x0a\x09\x09html button with: 'ボタン'.\x0a\x09].\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '次のページ';\x0a\x09\x09addText: '説明'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '最後のページ';\x0a\x09\x09addText: 'まとめ'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09^ presentation",
+messageSends: ["title:", "new", "author:", "organization:", "presentedAt:", "addText:", "addBr", "add:", "with:", "button", "addSlide:"],
 referencedClasses: ["Presentation", "Slide"]
 }),
 globals.Presentation.klass);
@@ -726,13 +842,12 @@ $1=_st($PagenatorWidget())._new();
 _st($1)._maxPage_(_st(_st(self["@model"])._slides())._size());
 _st($1)._target_(self["@model"]);
 $2=_st($1)._renderOn_(html);
-self["@slideContainer"]=_st(_st(html)._div())._class_("slide");
+self["@slideContainer"]=_st(html)._div();
 _st(_st(self["@model"])._currentSlide())._show();
-return self;
-}, function($ctx1) {$ctx1.fill(self,"renderOn:",{html:html},globals.PresentationWidget)})},
+return self}, function($ctx1) {$ctx1.fill(self,"renderOn:",{html:html},globals.PresentationWidget)})},
 args: ["html"],
-source: " renderOn: html\x0a\x09PagenatorWidget new maxPage: model slides size;\x0a\x09\x09target: model;\x0a\x09\x09renderOn: html.\x0a\x09\x09\x0a\x09slideContainer := html div class: 'slide'.\x0a\x09model currentSlide show.\x0a\x09^ self",
-messageSends: ["maxPage:", "new", "size", "slides", "target:", "renderOn:", "class:", "div", "show", "currentSlide"],
+source: "renderOn: html\x0a\x09PagenatorWidget new maxPage: model slides size;\x0a\x09\x09target: model;\x0a\x09\x09renderOn: html.\x0a\x09\x09\x0a\x09slideContainer := html div.\x0a\x22\x09slideContainer := html div class: 'slide'.\x22\x0a\x09model currentSlide show.",
+messageSends: ["maxPage:", "new", "size", "slides", "target:", "renderOn:", "div", "show", "currentSlide"],
 referencedClasses: ["PagenatorWidget"]
 }),
 globals.PresentationWidget);
@@ -771,7 +886,7 @@ globals.PresentationWidget);
 
 
 
-smalltalk.addClass('Slide', globals.Object, ['widget', 'presentation', 'title', 'contents'], 'Slide');
+smalltalk.addClass('Slide', globals.Object, ['widget', 'presentation', 'title', 'contents', 'shouldAppearInToc', 'classes'], 'Slide');
 smalltalk.addMethod(
 smalltalk.method({
 selector: "add:",
@@ -790,26 +905,7 @@ globals.Slide);
 
 smalltalk.addMethod(
 smalltalk.method({
-selector: "addBr",
-protocol: 'actions',
-fn: function (){
-var self=this;
-return smalltalk.withContext(function($ctx1) { 
-self._addContent_((function(html){
-return smalltalk.withContext(function($ctx2) {
-return _st(html)._br();
-}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
-return self}, function($ctx1) {$ctx1.fill(self,"addBr",{},globals.Slide)})},
-args: [],
-source: "addBr\x0a\x09self addContent: [ :html | html br. ].",
-messageSends: ["addContent:", "br"],
-referencedClasses: []
-}),
-globals.Slide);
-
-smalltalk.addMethod(
-smalltalk.method({
-selector: "addContent:",
+selector: "addBold:",
 protocol: 'actions',
 fn: function (aString){
 var self=this;
@@ -818,10 +914,254 @@ self._add_((function(html){
 return smalltalk.withContext(function($ctx2) {
 return _st(html)._with_(aString);
 }, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
-return self}, function($ctx1) {$ctx1.fill(self,"addContent:",{aString:aString},globals.Slide)})},
+return self}, function($ctx1) {$ctx1.fill(self,"addBold:",{aString:aString},globals.Slide)})},
 args: ["aString"],
-source: "addContent: aString\x0a\x09self add: [ :html | html with: aString. ]",
+source: "addBold: aString\x0a\x09self add: [ :html | html with: aString. ]",
 messageSends: ["add:", "with:"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addBr",
+protocol: 'actions',
+fn: function (){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+self._add_((function(html){
+return smalltalk.withContext(function($ctx2) {
+return _st(html)._br();
+}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addBr",{},globals.Slide)})},
+args: [],
+source: "addBr\x0a\x09self add: [ :html | html br. ]",
+messageSends: ["add:", "br"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addClass:",
+protocol: 'accessing',
+fn: function (aString){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+_st(self["@classes"])._add_(aString);
+return self}, function($ctx1) {$ctx1.fill(self,"addClass:",{aString:aString},globals.Slide)})},
+args: ["aString"],
+source: "addClass: aString\x0a\x09classes add: aString",
+messageSends: ["add:"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addDiv:",
+protocol: 'actions',
+fn: function (aString){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+self._add_((function(html){
+return smalltalk.withContext(function($ctx2) {
+return _st(_st(html)._div())._with_(aString);
+}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addDiv:",{aString:aString},globals.Slide)})},
+args: ["aString"],
+source: "addDiv: aString\x0a\x09self add: [ :html | html div with: aString. ]",
+messageSends: ["add:", "with:", "div"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addDiv:class:",
+protocol: 'actions',
+fn: function (aString,class_){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+var $1,$2;
+self._add_((function(html){
+return smalltalk.withContext(function($ctx2) {
+$1=_st(html)._div();
+_st($1)._class_(class_);
+$2=_st($1)._with_(aString);
+return $2;
+}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addDiv:class:",{aString:aString,class_:class_},globals.Slide)})},
+args: ["aString", "class"],
+source: "addDiv: aString class: class\x0a\x09self add: [ :html | html div class: class; with: aString. ]",
+messageSends: ["add:", "class:", "div", "with:"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addList:",
+protocol: 'actions',
+fn: function (anArray){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+self._add_((function(html){
+return smalltalk.withContext(function($ctx2) {
+return _st(_st(html)._ul())._with_((function(ulHtml){
+return smalltalk.withContext(function($ctx3) {
+return _st(anArray)._do_((function(item){
+return smalltalk.withContext(function($ctx4) {
+return _st(_st(ulHtml)._li())._with_(item);
+}, function($ctx4) {$ctx4.fillBlock({item:item},$ctx3,3)})}));
+}, function($ctx3) {$ctx3.fillBlock({ulHtml:ulHtml},$ctx2,2)})}));
+$ctx2.sendIdx["with:"]=1;
+}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addList:",{anArray:anArray},globals.Slide)})},
+args: ["anArray"],
+source: "addList: anArray\x0a\x09self add: [ :html |\x0a\x09\x09html ul with: [ :ulHtml |\x0a\x09\x09\x09anArray do: [ :item |\x0a\x09\x09\x09\x09ulHtml li with: item]]]",
+messageSends: ["add:", "with:", "ul", "do:", "li"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addOrderedList:",
+protocol: 'actions',
+fn: function (anArray){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+self._add_((function(html){
+return smalltalk.withContext(function($ctx2) {
+return _st(_st(html)._ol())._with_((function(ulHtml){
+return smalltalk.withContext(function($ctx3) {
+return _st(anArray)._do_((function(item){
+return smalltalk.withContext(function($ctx4) {
+return _st(_st(ulHtml)._li())._with_(item);
+}, function($ctx4) {$ctx4.fillBlock({item:item},$ctx3,3)})}));
+}, function($ctx3) {$ctx3.fillBlock({ulHtml:ulHtml},$ctx2,2)})}));
+$ctx2.sendIdx["with:"]=1;
+}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addOrderedList:",{anArray:anArray},globals.Slide)})},
+args: ["anArray"],
+source: "addOrderedList: anArray\x0a\x09self add: [ :html |\x0a\x09\x09html ol with: [ :ulHtml |\x0a\x09\x09\x09anArray do: [ :item |\x0a\x09\x09\x09\x09ulHtml li with: item]]]",
+messageSends: ["add:", "with:", "ol", "do:", "li"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addSpan:",
+protocol: 'actions',
+fn: function (aString){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+self._add_((function(html){
+return smalltalk.withContext(function($ctx2) {
+return _st(_st(html)._span())._with_(aString);
+}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addSpan:",{aString:aString},globals.Slide)})},
+args: ["aString"],
+source: "addSpan: aString\x0a\x09self add: [ :html | html span with: aString. ]",
+messageSends: ["add:", "with:", "span"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addSpan:class:",
+protocol: 'actions',
+fn: function (aString,class_){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+var $1,$2;
+self._add_((function(html){
+return smalltalk.withContext(function($ctx2) {
+$1=_st(html)._span();
+_st($1)._class_(class_);
+$2=_st($1)._with_(aString);
+return $2;
+}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addSpan:class:",{aString:aString,class_:class_},globals.Slide)})},
+args: ["aString", "class"],
+source: "addSpan: aString class: class\x0a\x09self add: [ :html | html span class: class; with: aString. ]",
+messageSends: ["add:", "class:", "span", "with:"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addText:",
+protocol: 'actions',
+fn: function (aString){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+self._add_((function(html){
+return smalltalk.withContext(function($ctx2) {
+return _st(html)._with_(aString);
+}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addText:",{aString:aString},globals.Slide)})},
+args: ["aString"],
+source: "addText: aString\x0a\x09self add: [ :html | html with: aString. ]",
+messageSends: ["add:", "with:"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addTextBr:",
+protocol: 'actions',
+fn: function (aString){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+var $1;
+self._add_((function(html){
+return smalltalk.withContext(function($ctx2) {
+_st(html)._with_(aString);
+$1=_st(html)._br();
+return $1;
+}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addTextBr:",{aString:aString},globals.Slide)})},
+args: ["aString"],
+source: "addTextBr: aString\x0a\x09self add: [ :html | html with: aString; br. ]",
+messageSends: ["add:", "with:", "br"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "classes",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+var $1;
+$1=self["@classes"];
+return $1;
+},
+args: [],
+source: "classes\x0a\x09^ classes",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "classes:",
+protocol: 'accessing',
+fn: function (anObject){
+var self=this;
+self["@classes"]=anObject;
+return self},
+args: ["anObject"],
+source: "classes: anObject\x0a\x09classes := anObject",
+messageSends: [],
 referencedClasses: []
 }),
 globals.Slide);
@@ -845,14 +1185,31 @@ globals.Slide);
 
 smalltalk.addMethod(
 smalltalk.method({
+selector: "contents:",
+protocol: 'accessing',
+fn: function (anObject){
+var self=this;
+self["@contents"]=anObject;
+return self},
+args: ["anObject"],
+source: "contents: anObject\x0a\x09contents := anObject",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
 selector: "initialize",
 protocol: 'initialization',
 fn: function (){
 var self=this;
+self["@classes"]=["slide"];
 self["@contents"]=[];
+self["@shouldAppearInToc"]=true;
 return self},
 args: [],
-source: "initialize\x0a\x09contents := #().",
+source: "initialize\x0a\x09classes := #('slide').\x0a\x09contents := #().\x0a\x09shouldAppearInToc := true.",
 messageSends: [],
 referencedClasses: []
 }),
@@ -892,23 +1249,74 @@ globals.Slide);
 
 smalltalk.addMethod(
 smalltalk.method({
+selector: "removeClass:",
+protocol: 'accessing',
+fn: function (aString){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+_st(self["@classes"])._remove_ifAbsent_(aString,(function(){
+}));
+return self}, function($ctx1) {$ctx1.fill(self,"removeClass:",{aString:aString},globals.Slide)})},
+args: ["aString"],
+source: "removeClass: aString\x0a\x09classes remove: aString ifAbsent: []",
+messageSends: ["remove:ifAbsent:"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "shouldAppearInToc",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+var $1;
+$1=self["@shouldAppearInToc"];
+return $1;
+},
+args: [],
+source: "shouldAppearInToc\x0a\x09^ shouldAppearInToc",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "shouldAppearInToc:",
+protocol: 'accessing',
+fn: function (anObject){
+var self=this;
+self["@shouldAppearInToc"]=anObject;
+return self},
+args: ["anObject"],
+source: "shouldAppearInToc: anObject\x0a\x09shouldAppearInToc := anObject",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
 selector: "show",
 protocol: 'actions',
 fn: function (){
 var self=this;
+var container;
 function $SlideWidget(){return globals.SlideWidget||(typeof SlideWidget=="undefined"?nil:SlideWidget)}
 return smalltalk.withContext(function($ctx1) { 
 var $1,$2;
+container=_st(_st(self["@presentation"])._widget())._slideContainer();
+_st(container)._class_(_st(self["@classes"])._join_(" "));
 $1=_st($SlideWidget())._new();
 _st($1)._model_(self);
-$2=_st($1)._container_(_st(_st(self["@presentation"])._widget())._slideContainer());
+$2=_st($1)._container_(container);
 self["@widget"]=$2;
 _st(self["@widget"])._renderOn_(nil);
-return self;
-}, function($ctx1) {$ctx1.fill(self,"show",{},globals.Slide)})},
+return self}, function($ctx1) {$ctx1.fill(self,"show",{container:container},globals.Slide)})},
 args: [],
-source: "show\x0a\x09widget := SlideWidget new model: self; container: presentation widget slideContainer.\x0a\x09widget renderOn: nil.\x0a\x09^ self.",
-messageSends: ["model:", "new", "container:", "slideContainer", "widget", "renderOn:"],
+source: "show\x0a\x09| container |\x0a\x09container := presentation widget slideContainer.\x0a\x09container class: (classes join: ' ').\x0a\x09widget := SlideWidget new \x0a\x09\x09model: self; \x0a\x09\x09container: container.\x0a\x09widget renderOn: nil.",
+messageSends: ["slideContainer", "widget", "class:", "join:", "model:", "new", "container:", "renderOn:"],
 referencedClasses: ["SlideWidget"]
 }),
 globals.Slide);
@@ -1073,7 +1481,7 @@ return _st(containerHtml)._with_($3);
 $ctx1.sendIdx["contents:"]=1;
 return self}, function($ctx1) {$ctx1.fill(self,"renderOn:",{html:html,bodyContainer:bodyContainer},globals.SlideWidget)})},
 args: ["html"],
-source: "renderOn: html\x0a\x09| bodyContainer |\x0a\x09container contents: [ :containerHtml |\x0a\x09\x09containerHtml with: (containerHtml h1 with: model title).\x0a\x09\x09containerHtml with: (containerHtml div class: 'body'; contents: [ :bodyHtml |\x0a\x09\x09\x09model contents do: [ :content |\x0a\x09\x09\x09\x09content value: bodyHtml.\x0a\x09\x09\x09].\x0a\x09\x09]). \x0a\x09].",
+source: "renderOn: html\x0a\x09| bodyContainer |\x0a\x09container contents: [ :containerHtml |\x0a\x09\x09containerHtml with: (containerHtml h1 with: model title).\x0a\x09\x09containerHtml with: (containerHtml div class: 'body'; contents: [ :bodyHtml |\x0a\x09\x09\x09model contents do: [ :content |\x0a\x09\x09\x09\x09content value: bodyHtml.\x0a\x09\x09\x09]]\x0a\x09\x09)].",
 messageSends: ["contents:", "with:", "h1", "title", "class:", "div", "do:", "contents", "value:"],
 referencedClasses: []
 }),

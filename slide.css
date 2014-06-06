@@ -24,6 +24,24 @@ body {
   font-size:3rem;
 }
 
+.slide > .body {
+  font-size:2.5rem;
+  padding:20px;
+}
+
+.slide > .body li {
+  margin-left:10%;
+}
+
+.title {
+  text-align:center;
+}
+
+.title h1 {
+  border: none;
+  margin:12vh 0;
+}
+
 button.paginate {
   position:absolute;
   top:0;

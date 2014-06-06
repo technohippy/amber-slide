@@ -38,6 +38,8 @@ movePrev
 !PagenatorWidget methodsFor: 'rendering'!
 
 renderOn: html
+	self setupEventHandler.
+	
 	html
 		with: [
 			html button
@@ -47,13 +49,17 @@ renderOn: html
 			html button
 				class: 'next paginate';
 				onClick: [self moveNext];
-				with: '>'.	
-		].
-	^ self
+				with: '>'].
+!
+
+setupEventHandler
+	window addEventListener: 'keypress' do: [ :event |
+		(event charCode == 112) ifTrue: [ self movePrev ].
+		(event charCode == 110) ifTrue: [ self moveNext ]].
 ! !
 
 Object subclass: #Presentation
-	instanceVariableNames: 'widget slides cursor title author organization presentedAt shouldGenerateTitle shouldGenerateToc'
+	instanceVariableNames: 'widget slides cursor title author organization presentedAt shouldGenerateTitle shouldGenerateToc tocTitle generatedTitleAt generatedTocAt'
 	package: 'Slide'!
 
 !Presentation methodsFor: 'accessing'!
@@ -115,7 +121,7 @@ widget: anObject
 !Presentation methodsFor: 'actions'!
 
 currentSlide
-	^ slides at: self cursor + 1.
+	^ slides at: self cursor + 1
 !
 
 hasNext
@@ -126,48 +132,32 @@ moveNext
 	(self hasNext)
 		ifTrue: [
 			(cursor + 1 < slides size)
-				ifTrue: [
-					cursor := cursor + 1.
-				]
-				ifFalse: [
-					cursor := 0.
-				]
-		]
+				ifTrue: [ cursor := cursor + 1 ]
+				ifFalse: [ cursor := 0 ]]
 		ifFalse: [
-			cursor := 0.
-		].
+			cursor := 0 ].
 !
 
 movePrev
 	(0 < cursor)
-		ifTrue: [
-			cursor := cursor - 1.
-		] 
-		ifFalse: [
-			cursor := slides size - 1.
-		].
+		ifTrue: [ cursor := cursor - 1 ] 
+		ifFalse: [ cursor := slides size - 1 ]
 !
 
 moveTo: aNumber
-	cursor := aNumber.
-!
-
-setup
-	
-	^ self
+	cursor := aNumber
 !
 
 showCurrentSlide
 	self currentSlide show.
-	"
-	widget renderOn: (HTMLCanvas onJQuery: 'body' asJQuery).
-	"
 !
 
 start
+	self generateTitleIfNeeded.
+	self generateTocIfNeeded.
+	
 	widget := PresentationWidget new model: self.
 	widget renderOn: (HTMLCanvas onJQuery: 'body' asJQuery).
-	^ self
 ! !
 
 !Presentation methodsFor: 'initialization'!
@@ -175,6 +165,11 @@ start
 initialize
 	slides := #().
 	cursor := 0.
+	tocTitle := 'Abstract'.
+	shouldGenerateTitle := true.
+	shouldGenerateToc := true.
+	generatedTitleAt := 1.
+	generatedTocAt := 2.
 ! !
 
 !Presentation methodsFor: 'manage slide'!
@@ -182,6 +177,11 @@ initialize
 addSlide: aSlide
 	aSlide presentation: self.
 	slides add: aSlide.
+!
+
+addSlide: aSlide beforeIndex: index
+	aSlide presentation: self.
+	slides add: aSlide beforeIndex: index.
 !
 
 generateTitle
@@ -196,6 +196,39 @@ putSlide: aSlide at: index
 	slides at: index put: aSlide.
 ! !
 
+!Presentation methodsFor: 'private'!
+
+generateTitleIfNeeded
+	shouldGenerateTitle ifTrue: [
+		| titleSlide |
+		titleSlide := Slide new
+			title: title;
+			shouldAppearInToc: false;
+			addClass: 'title';
+			addText: author;
+			addBr;
+			addText: organization;
+			addBr;
+			addText: presentedAt.
+		self addSlide: titleSlide beforeIndex: generatedTitleAt.
+	].
+!
+
+generateTocIfNeeded
+	shouldGenerateToc ifTrue: [
+		| titles tocSlide |	
+		titles := #().
+		slides do: [ :slide |
+			slide shouldAppearInToc ifTrue: [titles add: slide title]].
+		tocSlide := Slide new
+			title: tocTitle;
+			addClass: 'toc';
+			shouldAppearInToc: false;
+			addOrderedList: titles.
+		self addSlide: tocSlide beforeIndex: generatedTocAt.
+	].
+! !
+
 !Presentation class methodsFor: 'presentation'!
 
 tenka1AltJs2014
@@ -204,11 +237,15 @@ tenka1AltJs2014
 	presentation := Presentation new
 		title: 'Amber Smalltalk';
 		author: 'あんどうやすし';
-		organization: '株式会社ノハナ'.
+		organization: '株式会社ノハナ';
+		presentedAt: '2014-06-08'.
+	presentation.
 	
 	slide := Slide new
 		title: '最初のページ';
-		addContent: 'ご挨拶'.
+		addText: 'ご挨拶'.
+	slide addBr.
+	slide addText: '二行目'.
 	slide addBr.
 	slide add: [ :html |
 		html button with: 'ボタン'.
@@ -217,15 +254,13 @@ tenka1AltJs2014
 	
 	slide := Slide new
 		title: '次のページ';
-		addContent: '説明'.
+		addText: '説明'.
 	presentation addSlide: slide.
 	
 	slide := Slide new
 		title: '最後のページ';
-		addContent: 'まとめ'.
+		addText: 'まとめ'.
 	presentation addSlide: slide.
-	
-	presentation setup.
 	
 	^ presentation
 ! !
@@ -268,19 +303,35 @@ renderOn: html
 		target: model;
 		renderOn: html.
 		
-	slideContainer := html div class: 'slide'.
+	slideContainer := html div.
+"	slideContainer := html div class: 'slide'."
 	model currentSlide show.
-	^ self
 ! !
 
 Object subclass: #Slide
-	instanceVariableNames: 'widget presentation title contents'
+	instanceVariableNames: 'widget presentation title contents shouldAppearInToc classes'
 	package: 'Slide'!
 
 !Slide methodsFor: 'accessing'!
 
+addClass: aString
+	classes add: aString
+!
+
+classes
+	^ classes
+!
+
+classes: anObject
+	classes := anObject
+!
+
 contents
 	^ contents
+!
+
+contents: anObject
+	contents := anObject
 !
 
 presentation
@@ -289,6 +340,18 @@ presentation
 
 presentation: anObject
 	presentation := anObject.
+!
+
+removeClass: aString
+	classes remove: aString ifAbsent: []
+!
+
+shouldAppearInToc
+	^ shouldAppearInToc
+!
+
+shouldAppearInToc: anObject
+	shouldAppearInToc := anObject
 !
 
 title
@@ -313,24 +376,68 @@ add: aBlock
 	contents add: aBlock.
 !
 
-addBr
-	self addContent: [ :html | html br. ].
-!
-
-addContent: aString
+addBold: aString
 	self add: [ :html | html with: aString. ]
 !
 
+addBr
+	self add: [ :html | html br. ]
+!
+
+addDiv: aString
+	self add: [ :html | html div with: aString. ]
+!
+
+addDiv: aString class: class
+	self add: [ :html | html div class: class; with: aString. ]
+!
+
+addList: anArray
+	self add: [ :html |
+		html ul with: [ :ulHtml |
+			anArray do: [ :item |
+				ulHtml li with: item]]]
+!
+
+addOrderedList: anArray
+	self add: [ :html |
+		html ol with: [ :ulHtml |
+			anArray do: [ :item |
+				ulHtml li with: item]]]
+!
+
+addSpan: aString
+	self add: [ :html | html span with: aString. ]
+!
+
+addSpan: aString class: class
+	self add: [ :html | html span class: class; with: aString. ]
+!
+
+addText: aString
+	self add: [ :html | html with: aString. ]
+!
+
+addTextBr: aString
+	self add: [ :html | html with: aString; br. ]
+!
+
 show
-	widget := SlideWidget new model: self; container: presentation widget slideContainer.
+	| container |
+	container := presentation widget slideContainer.
+	container class: (classes join: ' ').
+	widget := SlideWidget new 
+		model: self; 
+		container: container.
 	widget renderOn: nil.
-	^ self.
 ! !
 
 !Slide methodsFor: 'initialization'!
 
 initialize
+	classes := #('slide').
 	contents := #().
+	shouldAppearInToc := true.
 ! !
 
 Widget subclass: #SlideWidget
@@ -364,9 +471,8 @@ renderOn: html
 		containerHtml with: (containerHtml div class: 'body'; contents: [ :bodyHtml |
 			model contents do: [ :content |
 				content value: bodyHtml.
-			].
-		]). 
-	].
+			]]
+		)].
 ! !
 
 Object subclass: #Timer
