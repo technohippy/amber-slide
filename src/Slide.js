@@ -121,30 +121,39 @@ protocol: 'rendering',
 fn: function (){
 var self=this;
 return smalltalk.withContext(function($ctx1) { 
-var $2,$1,$6,$5,$4,$3;
+var $1,$2,$3,$4,$6,$5,$9,$8,$7;
 _st(window)._addEventListener_do_("keypress",(function(event){
 return smalltalk.withContext(function($ctx2) {
-$2=_st(event)._charCode();
+$1=_st(window)._console();
+$2=$1;
+$3=_st(event)._charCode();
 $ctx2.sendIdx["charCode"]=1;
-$1=_st($2).__eq_eq((112));
-$ctx2.sendIdx["=="]=1;
-if(smalltalk.assert($1)){
-self._movePrev();
-};
+_st($2)._log_($3);
+$ctx2.sendIdx["log:"]=1;
+_st($1)._log_(",");
+$ctx2.sendIdx["log:"]=2;
+$4=_st($1)._log_(_st(event)._keyCode());
+$4;
 $6=_st(event)._charCode();
 $ctx2.sendIdx["charCode"]=2;
-$5=_st($6).__eq_eq((110));
-$4=_st($5).__or(_st(event)._charCode());
-$3=_st($4).__eq_eq((13));
+$5=_st($6).__eq_eq((112));
+$ctx2.sendIdx["=="]=1;
+if(smalltalk.assert($5)){
+self._movePrev();
+};
+$9=_st(event)._charCode();
+$ctx2.sendIdx["charCode"]=3;
+$8=_st($9).__eq_eq((110));
 $ctx2.sendIdx["=="]=2;
-if(smalltalk.assert($3)){
+$7=_st($8).__or(_st(_st(event)._charCode()).__eq_eq((13)));
+if(smalltalk.assert($7)){
 return self._moveNext();
 };
 }, function($ctx2) {$ctx2.fillBlock({event:event},$ctx1,1)})}));
 return self}, function($ctx1) {$ctx1.fill(self,"setupEventHandler",{},globals.PagenatorWidget)})},
 args: [],
-source: "setupEventHandler\x0a\x09window addEventListener: 'keypress' do: [ :event |\x0a\x09\x09(event charCode == 112) ifTrue: [ self movePrev ].\x0a\x09\x09(event charCode == 110 | event charCode == 13) ifTrue: [ self moveNext ]].",
-messageSends: ["addEventListener:do:", "ifTrue:", "==", "charCode", "movePrev", "|", "moveNext"],
+source: "setupEventHandler\x0a\x09window addEventListener: 'keypress' do: [ :event |\x0a\x09window console\x0a\x09\x09log: event charCode;\x0a\x09\x09log: ',';\x0a\x09\x09log: event keyCode.\x0a\x09\x09\x22p\x22\x0a\x09\x09(event charCode == 112) ifTrue: [ self movePrev ].\x0a\x09\x09\x0a\x09\x09\x22n or enter\x22\x0a\x09\x09((event charCode == 110) | (event charCode == 13)) ifTrue: [ self moveNext ]].",
+messageSends: ["addEventListener:do:", "log:", "console", "charCode", "keyCode", "ifTrue:", "==", "movePrev", "|", "moveNext"],
 referencedClasses: []
 }),
 globals.PagenatorWidget);
@@ -801,8 +810,13 @@ _st($5)._addTextBr_("Amber");
 $ctx1.sendIdx["addTextBr:"]=1;
 _st($5)._addTextBr_("= Jtalk");
 $ctx1.sendIdx["addTextBr:"]=2;
-$6=_st($5)._addText_("= \x22J\x22avaScript Small\x22talk\x22");
+_st($5)._addText_("= ");
 $ctx1.sendIdx["addText:"]=1;
+_st($5)._addStrongText_("\x22J\x22");
+$ctx1.sendIdx["addStrongText:"]=1;
+_st($5)._addText_("avaScript Small");
+$ctx1.sendIdx["addText:"]=2;
+$6=_st($5)._addStrongText_("\x22talk\x22");
 $4=$6;
 _st($3)._addSlide_($4);
 $ctx1.sendIdx["addSlide:"]=1;
@@ -813,7 +827,7 @@ _st($9)._title_("What's Smalltalk?");
 $ctx1.sendIdx["title:"]=3;
 _st($9)._addTextBr_("Smalltalk");
 $10=_st($9)._addText_("= Language + Libraries + IDE");
-$ctx1.sendIdx["addText:"]=2;
+$ctx1.sendIdx["addText:"]=3;
 $8=$10;
 _st($7)._addSlide_($8);
 $ctx1.sendIdx["addSlide:"]=2;
@@ -822,7 +836,7 @@ $ctx1.sendIdx["new"]=4;
 _st($11)._title_("次のページ");
 $ctx1.sendIdx["title:"]=4;
 $12=_st($11)._addText_("説明");
-$ctx1.sendIdx["addText:"]=3;
+$ctx1.sendIdx["addText:"]=4;
 slide=$12;
 _st(presentation)._addSlide_(slide);
 $ctx1.sendIdx["addSlide:"]=3;
@@ -835,8 +849,8 @@ $15=presentation;
 return $15;
 }, function($ctx1) {$ctx1.fill(self,"tenka1AltJs2014",{presentation:presentation,slide:slide},globals.Presentation.klass)})},
 args: [],
-source: "tenka1AltJs2014\x0a\x09\x22Build a presentation for tenka 1 altJS conf\x22\x0a\x09| presentation slide |\x0a\x09presentation := Presentation new\x0a\x09\x09title: 'Amber';\x0a\x09\x09author: 'あんどうやすし';\x0a\x09\x09organization: '株式会社ノハナ';\x0a\x09\x09presentedAt: '2014-06-08'.\x0a\x09presentation.\x0a\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'What''s Amber?';\x0a\x09\x09addTextBr: 'Amber';\x0a\x09\x09addTextBr: '= Jtalk';\x0a\x09\x09addText: '= \x22J\x22avaScript Small\x22talk\x22').\x0a\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'What''s Smalltalk?';\x0a\x09\x09addTextBr: 'Smalltalk';\x0a\x09\x09addText: '= Language + Libraries + IDE'). \x0a\x09\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '次のページ';\x0a\x09\x09addText: '説明'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '最後のページ';\x0a\x09\x09addText: 'まとめ'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09^ presentation",
-messageSends: ["title:", "new", "author:", "organization:", "presentedAt:", "addSlide:", "addTextBr:", "addText:"],
+source: "tenka1AltJs2014\x0a\x09\x22Build a presentation for tenka 1 altJS conf\x22\x0a\x09| presentation slide |\x0a\x09presentation := Presentation new\x0a\x09\x09title: 'Amber';\x0a\x09\x09author: 'あんどうやすし';\x0a\x09\x09organization: '株式会社ノハナ';\x0a\x09\x09presentedAt: '2014-06-08'.\x0a\x09presentation.\x0a\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'What''s Amber?';\x0a\x09\x09addTextBr: 'Amber';\x0a\x09\x09addTextBr: '= Jtalk';\x0a\x09\x09addText: '= ';\x0a\x09\x09addStrongText: '\x22J\x22';\x0a\x09\x09addText: 'avaScript Small';\x0a\x09\x09addStrongText: '\x22talk\x22').\x0a\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'What''s Smalltalk?';\x0a\x09\x09addTextBr: 'Smalltalk';\x0a\x09\x09addText: '= Language + Libraries + IDE'). \x0a\x09\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '次のページ';\x0a\x09\x09addText: '説明'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '最後のページ';\x0a\x09\x09addText: 'まとめ'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09^ presentation",
+messageSends: ["title:", "new", "author:", "organization:", "presentedAt:", "addSlide:", "addTextBr:", "addText:", "addStrongText:"],
 referencedClasses: ["Presentation", "Slide"]
 }),
 globals.Presentation.klass);
@@ -978,25 +992,6 @@ return self}, function($ctx1) {$ctx1.fill(self,"add:",{aBlock:aBlock},globals.Sl
 args: ["aBlock"],
 source: "add: aBlock\x0a\x09contents add: aBlock.",
 messageSends: ["add:"],
-referencedClasses: []
-}),
-globals.Slide);
-
-smalltalk.addMethod(
-smalltalk.method({
-selector: "addBold:",
-protocol: 'actions',
-fn: function (aString){
-var self=this;
-return smalltalk.withContext(function($ctx1) { 
-self._add_((function(html){
-return smalltalk.withContext(function($ctx2) {
-return _st(html)._with_(aString);
-}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
-return self}, function($ctx1) {$ctx1.fill(self,"addBold:",{aString:aString},globals.Slide)})},
-args: ["aString"],
-source: "addBold: aString\x0a\x09self add: [ :html | html with: aString. ]",
-messageSends: ["add:", "with:"],
 referencedClasses: []
 }),
 globals.Slide);
@@ -1168,6 +1163,25 @@ return self}, function($ctx1) {$ctx1.fill(self,"addSpan:class:",{aString:aString
 args: ["aString", "class"],
 source: "addSpan: aString class: class\x0a\x09self add: [ :html | html span class: class; with: aString. ]",
 messageSends: ["add:", "class:", "span", "with:"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addStrongText:",
+protocol: 'actions',
+fn: function (aString){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+self._add_((function(html){
+return smalltalk.withContext(function($ctx2) {
+return _st(_st(html)._strong())._with_(aString);
+}, function($ctx2) {$ctx2.fillBlock({html:html},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addStrongText:",{aString:aString},globals.Slide)})},
+args: ["aString"],
+source: "addStrongText: aString\x0a\x09self add: [ :html | html strong with: aString. ]",
+messageSends: ["add:", "with:", "strong"],
 referencedClasses: []
 }),
 globals.Slide);
@@ -1560,7 +1574,7 @@ return _st(containerHtml)._with_($3);
 $ctx1.sendIdx["contents:"]=1;
 return self}, function($ctx1) {$ctx1.fill(self,"renderOn:",{html:html,bodyContainer:bodyContainer},globals.SlideWidget)})},
 args: ["html"],
-source: "renderOn: html\x0a\x09| bodyContainer |\x0a\x09container contents: [ :containerHtml |\x0a\x09\x09containerHtml with: (containerHtml h1 with: model title).\x0a\x09\x09containerHtml with: (containerHtml div class: 'body'; contents: [ :bodyHtml |\x0a\x09\x09\x09model contents do: [ :content |\x0a\x09\x09\x09\x09content value: bodyHtml.\x0a\x09\x09\x09]]\x0a\x09\x09)].",
+source: "renderOn: html\x0a\x09| bodyContainer |\x0a\x09container contents: [ :containerHtml |\x0a\x09\x09containerHtml with: (containerHtml h1 with: model title).\x0a\x09\x09containerHtml with: (\x0a\x09\x09\x09containerHtml div class: 'body'; \x0a\x09\x09\x09contents: [ :bodyHtml |\x0a\x09\x09\x09\x09model contents do: [ :content |\x0a\x09\x09\x09\x09\x09content value: bodyHtml]])].",
 messageSends: ["contents:", "with:", "h1", "title", "class:", "div", "do:", "contents", "value:"],
 referencedClasses: []
 }),

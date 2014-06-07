@@ -54,8 +54,15 @@ renderOn: html
 
 setupEventHandler
 	window addEventListener: 'keypress' do: [ :event |
+	window console
+		log: event charCode;
+		log: ',';
+		log: event keyCode.
+		"p"
 		(event charCode == 112) ifTrue: [ self movePrev ].
-		(event charCode == 110 | event charCode == 13) ifTrue: [ self moveNext ]].
+		
+		"n or enter"
+		((event charCode == 110) | (event charCode == 13)) ifTrue: [ self moveNext ]].
 ! !
 
 Object subclass: #Presentation
@@ -267,7 +274,10 @@ tenka1AltJs2014
 		title: 'What''s Amber?';
 		addTextBr: 'Amber';
 		addTextBr: '= Jtalk';
-		addText: '= "J"avaScript Small"talk"').
+		addText: '= ';
+		addStrongText: '"J"';
+		addText: 'avaScript Small';
+		addStrongText: '"talk"').
 	
 	presentation addSlide: (Slide new
 		title: 'What''s Smalltalk?';
@@ -398,10 +408,6 @@ add: aBlock
 	contents add: aBlock.
 !
 
-addBold: aString
-	self add: [ :html | html with: aString. ]
-!
-
 addBr
 	self add: [ :html | html br. ]
 !
@@ -434,6 +440,10 @@ addSpan: aString
 
 addSpan: aString class: class
 	self add: [ :html | html span class: class; with: aString. ]
+!
+
+addStrongText: aString
+	self add: [ :html | html strong with: aString. ]
 !
 
 addText: aString
@@ -490,11 +500,11 @@ renderOn: html
 	| bodyContainer |
 	container contents: [ :containerHtml |
 		containerHtml with: (containerHtml h1 with: model title).
-		containerHtml with: (containerHtml div class: 'body'; contents: [ :bodyHtml |
-			model contents do: [ :content |
-				content value: bodyHtml.
-			]]
-		)].
+		containerHtml with: (
+			containerHtml div class: 'body'; 
+			contents: [ :bodyHtml |
+				model contents do: [ :content |
+					content value: bodyHtml]])].
 ! !
 
 Object subclass: #Timer

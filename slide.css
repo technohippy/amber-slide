@@ -33,6 +33,11 @@ body {
   margin-left:10%;
 }
 
+.slide strong {
+  font-weight:bold;
+  color:red;
+}
+
 .title {
   text-align:center;
 }
