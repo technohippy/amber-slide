@@ -278,6 +278,23 @@ globals.Presentation);
 
 smalltalk.addMethod(
 smalltalk.method({
+selector: "browseIt:",
+protocol: 'evaluating',
+fn: function (aString){
+var self=this;
+function $Browser(){return globals.Browser||(typeof Browser=="undefined"?nil:Browser)}
+return smalltalk.withContext(function($ctx1) { 
+_st($Browser())._openOn_(self._doIt_(aString));
+return self}, function($ctx1) {$ctx1.fill(self,"browseIt:",{aString:aString},globals.Presentation)})},
+args: ["aString"],
+source: "browseIt: aString\x0a\x09Browser openOn: (self doIt: aString).",
+messageSends: ["openOn:", "doIt:"],
+referencedClasses: ["Browser"]
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
 selector: "currentSlide",
 protocol: 'actions',
 fn: function (){
@@ -415,7 +432,7 @@ _st(self["@slides"])._do_((function(slide){
 return smalltalk.withContext(function($ctx2) {
 $2=_st(slide)._shouldAppearInToc();
 if(smalltalk.assert($2)){
-return _st(titles)._add_(_st(slide)._title());
+return _st(titles)._add_(_st(slide)._tocTitle());
 };
 }, function($ctx2) {$ctx2.fillBlock({slide:slide},$ctx1,2)})}));
 $3=_st($Slide())._new();
@@ -429,9 +446,73 @@ self._addSlide_beforeIndex_(tocSlide,self["@generatedTocAt"]);
 };
 return self}, function($ctx1) {$ctx1.fill(self,"generateTocIfNeeded",{},globals.Presentation)})},
 args: [],
-source: "generateTocIfNeeded\x0a\x09shouldGenerateToc ifTrue: [\x0a\x09\x09| titles tocSlide |\x09\x0a\x09\x09titles := #().\x0a\x09\x09slides do: [ :slide |\x0a\x09\x09\x09slide shouldAppearInToc ifTrue: [titles add: slide title]].\x0a\x09\x09tocSlide := Slide new\x0a\x09\x09\x09title: tocTitle;\x0a\x09\x09\x09addClass: 'toc';\x0a\x09\x09\x09shouldAppearInToc: false;\x0a\x09\x09\x09addOrderedList: titles class: 'small'.\x0a\x09\x09self addSlide: tocSlide beforeIndex: generatedTocAt.\x0a\x09].",
-messageSends: ["ifTrue:", "do:", "shouldAppearInToc", "add:", "title", "title:", "new", "addClass:", "shouldAppearInToc:", "addOrderedList:class:", "addSlide:beforeIndex:"],
+source: "generateTocIfNeeded\x0a\x09shouldGenerateToc ifTrue: [\x0a\x09\x09| titles tocSlide |\x09\x0a\x09\x09titles := #().\x0a\x09\x09slides do: [ :slide |\x0a\x09\x09\x09slide shouldAppearInToc ifTrue: [titles add: slide tocTitle]].\x0a\x09\x09tocSlide := Slide new\x0a\x09\x09\x09title: tocTitle;\x0a\x09\x09\x09addClass: 'toc';\x0a\x09\x09\x09shouldAppearInToc: false;\x0a\x09\x09\x09addOrderedList: titles class: 'small'.\x0a\x09\x09self addSlide: tocSlide beforeIndex: generatedTocAt.\x0a\x09].",
+messageSends: ["ifTrue:", "do:", "shouldAppearInToc", "add:", "tocTitle", "title:", "new", "addClass:", "shouldAppearInToc:", "addOrderedList:class:", "addSlide:beforeIndex:"],
 referencedClasses: ["Slide"]
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "generatedTitleAt",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+var $1;
+$1=self["@generatedTitleAt"];
+return $1;
+},
+args: [],
+source: "generatedTitleAt\x0a\x09^ generatedTitleAt",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "generatedTitleAt:",
+protocol: 'accessing',
+fn: function (anObject){
+var self=this;
+self["@generatedTitleAt"]=anObject;
+return self},
+args: ["anObject"],
+source: "generatedTitleAt: anObject\x0a\x09generatedTitleAt := anObject",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "generatedTocAt",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+var $1;
+$1=self["@generatedTocAt"];
+return $1;
+},
+args: [],
+source: "generatedTocAt\x0a\x09^ generatedTocAt",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "generatedTocAt:",
+protocol: 'accessing',
+fn: function (anObject){
+var self=this;
+self["@generatedTocAt"]=anObject;
+return self},
+args: ["anObject"],
+source: "generatedTocAt: anObject\x0a\x09generatedTocAt := anObject",
+messageSends: [],
+referencedClasses: []
 }),
 globals.Presentation);
 
@@ -656,24 +737,99 @@ protocol: 'private',
 fn: function (){
 var self=this;
 return smalltalk.withContext(function($ctx1) { 
-var $1,$2;
+var $1,$2,$3,$5,$4,$6;
 _st(window)._addEventListener_do_("keypress",(function(event){
-return smalltalk.withContext(function($ctx2) {
-$1=_st(_st(event)._charCode()).__eq_eq((4));
-if(smalltalk.assert($1)){
 var selectedText;
+return smalltalk.withContext(function($ctx2) {
+$1=_st(window)._console();
+$2=_st(event)._charCode();
+$ctx2.sendIdx["charCode"]=1;
+_st($1)._log_($2);
 selectedText=_st(_st(window)._getSelection())._toString();
 selectedText;
-$2=_st(selectedText)._isEmpty();
-if(! smalltalk.assert($2)){
-return self._alertIt_(selectedText);
+$3=_st(selectedText)._isEmpty();
+if(! smalltalk.assert($3)){
+$5=_st(event)._charCode();
+$ctx2.sendIdx["charCode"]=2;
+$4=_st($5).__eq((4));
+$ctx2.sendIdx["="]=1;
+if(smalltalk.assert($4)){
+self._alertIt_(selectedText);
+};
+$6=_st(_st(event)._charCode()).__eq((2));
+if(smalltalk.assert($6)){
+return self._browseIt_(selectedText);
 };
 };
-}, function($ctx2) {$ctx2.fillBlock({event:event},$ctx1,1)})}));
+}, function($ctx2) {$ctx2.fillBlock({event:event,selectedText:selectedText},$ctx1,1)})}));
 return self}, function($ctx1) {$ctx1.fill(self,"setupEventHandler",{},globals.Presentation)})},
 args: [],
-source: "setupEventHandler\x0a\x09window addEventListener: 'keypress' do: [ :event |\x0a\x09\x09(event charCode == 4) ifTrue: [ \x22Ctrl+d\x22\x0a\x09\x09\x09| selectedText |\x0a\x09\x09\x09selectedText := window getSelection toString.\x0a\x09\x09\x09(selectedText isEmpty) ifFalse: [\x0a\x09\x09\x09\x09self alertIt: selectedText]]].",
-messageSends: ["addEventListener:do:", "ifTrue:", "==", "charCode", "toString", "getSelection", "ifFalse:", "isEmpty", "alertIt:"],
+source: "setupEventHandler\x0a\x09window addEventListener: 'keypress' do: [ :event |\x0a\x09\x09| selectedText |\x0a\x09\x09window console log: event charCode.\x0a\x09\x09selectedText := window getSelection toString.\x0a\x09\x09(selectedText isEmpty) ifFalse: [\x0a\x09\x09\x09(event charCode = 4) ifTrue: [ \x22Ctrl+d\x22\x0a\x09\x09\x09\x09self alertIt: selectedText].\x0a\x09\x09\x09(event charCode = 2) ifTrue: [ \x22Ctrl+b\x22\x0a\x09\x09\x09\x09self browseIt: selectedText]]].",
+messageSends: ["addEventListener:do:", "log:", "console", "charCode", "toString", "getSelection", "ifFalse:", "isEmpty", "ifTrue:", "=", "alertIt:", "browseIt:"],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "shouldGenerateTitle",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+var $1;
+$1=self["@shouldGenerateTitle"];
+return $1;
+},
+args: [],
+source: "shouldGenerateTitle\x0a\x09^ shouldGenerateTitle",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "shouldGenerateTitle:",
+protocol: 'accessing',
+fn: function (anObject){
+var self=this;
+self["@shouldGenerateTitle"]=anObject;
+return self},
+args: ["anObject"],
+source: "shouldGenerateTitle: anObject\x0a\x09shouldGenerateTitle := anObject",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "shouldGenerateToc",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+var $1;
+$1=self["@shouldGenerateToc"];
+return $1;
+},
+args: [],
+source: "shouldGenerateToc\x0a\x09^ shouldGenerateToc",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "shouldGenerateToc:",
+protocol: 'accessing',
+fn: function (anObject){
+var self=this;
+self["@shouldGenerateToc"]=anObject;
+return self},
+args: ["anObject"],
+source: "shouldGenerateToc: anObject\x0a\x09shouldGenerateToc := anObject",
+messageSends: [],
 referencedClasses: []
 }),
 globals.Presentation);
@@ -706,6 +862,21 @@ return $1;
 },
 args: [],
 source: "slides\x0a\x09^ slides",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "slides:",
+protocol: 'accessing',
+fn: function (anObject){
+var self=this;
+self["@slides"]=anObject;
+return self},
+args: ["anObject"],
+source: "slides: anObject\x0a\x09slides := anObject",
 messageSends: [],
 referencedClasses: []
 }),
@@ -767,6 +938,38 @@ globals.Presentation);
 
 smalltalk.addMethod(
 smalltalk.method({
+selector: "tocTitle",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+var $1;
+$1=self["@tocTitle"];
+return $1;
+},
+args: [],
+source: "tocTitle\x0a\x09^ tocTitle",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "tocTitle:",
+protocol: 'accessing',
+fn: function (anObject){
+var self=this;
+self["@tocTitle"]=anObject;
+return self},
+args: ["anObject"],
+source: "tocTitle: anObject\x0a\x09tocTitle := anObject",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
 selector: "widget",
 protocol: 'accessing',
 fn: function (){
@@ -808,19 +1011,21 @@ var presentation,slide;
 function $Presentation(){return globals.Presentation||(typeof Presentation=="undefined"?nil:Presentation)}
 function $Slide(){return globals.Slide||(typeof Slide=="undefined"?nil:Slide)}
 return smalltalk.withContext(function($ctx1) { 
-var $1,$2,$3,$5,$6,$4,$7,$9,$10,$8,$11,$13,$14,$12,$15,$17,$18,$16,$19,$21,$22,$20,$23,$25,$26,$24,$27,$28,$29,$30,$31;
+var $1,$2,$3,$5,$6,$4,$7,$9,$10,$8,$11,$13,$14,$12,$15,$17,$18,$16,$19,$21,$22,$20,$23,$25,$26,$24,$27,$29,$30,$28,$31,$33,$34,$32,$35,$37,$38,$36,$39,$41,$42,$40,$43,$45,$46,$44,$47,$49,$50,$48,$51,$53,$54,$52,$55,$56,$57;
 $1=_st($Presentation())._new();
 $ctx1.sendIdx["new"]=1;
 _st($1)._title_("Amber");
 $ctx1.sendIdx["title:"]=1;
 _st($1)._author_("あんどうやすし");
 _st($1)._organization_("株式会社ノハナ");
-$2=_st($1)._presentedAt_("2014-06-08");
+_st($1)._presentedAt_("2014-06-08");
+$2=_st($1)._tocTitle_("目次");
+$ctx1.sendIdx["tocTitle:"]=1;
 presentation=$2;
 $3=presentation;
 $5=_st($Slide())._new();
 $ctx1.sendIdx["new"]=2;
-_st($5)._title_("What's Amber?");
+_st($5)._title_("Amberとは？");
 $ctx1.sendIdx["title:"]=2;
 _st($5)._addTextBr_("Amber");
 $ctx1.sendIdx["addTextBr:"]=1;
@@ -839,11 +1044,11 @@ $ctx1.sendIdx["addSlide:"]=1;
 $7=presentation;
 $9=_st($Slide())._new();
 $ctx1.sendIdx["new"]=3;
-_st($9)._title_("What's Smalltalk?");
+_st($9)._title_("Smalltalkとは？");
 $ctx1.sendIdx["title:"]=3;
 _st($9)._addTextBr_("Smalltalk");
 $ctx1.sendIdx["addTextBr:"]=3;
-$10=_st($9)._addText_("= Language + Library + Environment");
+$10=_st($9)._addText_("= 言語 + ライブラリ + 環境");
 $ctx1.sendIdx["addText:"]=3;
 $8=$10;
 _st($7)._addSlide_($8);
@@ -851,8 +1056,10 @@ $ctx1.sendIdx["addSlide:"]=2;
 $11=presentation;
 $13=_st($Slide())._new();
 $ctx1.sendIdx["new"]=4;
-_st($13)._title_("Smalltalk - Language");
+_st($13)._title_("Smalltalk - 言語");
 $ctx1.sendIdx["title:"]=4;
+_st($13)._tocTitle_("Smalltalk");
+$ctx1.sendIdx["tocTitle:"]=2;
 _st($13)._addTextBr_("メッセージ式");
 $ctx1.sendIdx["addTextBr:"]=4;
 $14=_st($13)._addOrderedList_(["単項メッセージ: 1 negated.", "二項メッセージ: 1 + 1.", "キーワードメッセージ: 1 to: 10 by: 2."]);
@@ -862,22 +1069,27 @@ $ctx1.sendIdx["addSlide:"]=3;
 $15=presentation;
 $17=_st($Slide())._new();
 $ctx1.sendIdx["new"]=5;
-_st($17)._title_("Smalltalk - Library");
+_st($17)._title_("Smalltalk - ライブラリ");
 $ctx1.sendIdx["title:"]=5;
+_st($17)._shouldAppearInToc_(false);
+$ctx1.sendIdx["shouldAppearInToc:"]=1;
 _st($17)._addTextBr_("反復");
 $ctx1.sendIdx["addTextBr:"]=5;
 _st($17)._addList_(["BlockClosure#whileTrue"]);
 $ctx1.sendIdx["addList:"]=1;
 _st($17)._addTextBr_("分岐");
 $18=_st($17)._addList_(["Boolean#ifTrue:ifFalse:"]);
+$ctx1.sendIdx["addList:"]=2;
 $16=$18;
 _st($15)._addSlide_($16);
 $ctx1.sendIdx["addSlide:"]=4;
 $19=presentation;
 $21=_st($Slide())._new();
 $ctx1.sendIdx["new"]=6;
-_st($21)._title_("Smalltalk - Environment");
+_st($21)._title_("Smalltalk - 環境");
 $ctx1.sendIdx["title:"]=6;
+_st($21)._shouldAppearInToc_(false);
+$ctx1.sendIdx["shouldAppearInToc:"]=2;
 $22=_st($21)._addImage_("/image/tenka1altjs2014/ide.png");
 $20=$22;
 _st($19)._addSlide_($20);
@@ -885,34 +1097,109 @@ $ctx1.sendIdx["addSlide:"]=5;
 $23=presentation;
 $25=_st($Slide())._new();
 $ctx1.sendIdx["new"]=7;
-_st($25)._title_("Amber - Language");
+_st($25)._title_("Amber - 言語");
 $ctx1.sendIdx["title:"]=7;
+_st($25)._tocTitle_("Amber");
 _st($25)._addText_("Smalltalk - JS連携");
 $ctx1.sendIdx["addText:"]=4;
 $26=_st($25)._addList_class_(["ST->JS: (window jQuery: 'body') css: 'background' color: 'red'", "ST->JS: < if (true) {console.log('hi')} >", "JS->ST: dict = require('amber/helpers').Dictionary._new(); dict._at_put_(3, 4);"],"small");
+$ctx1.sendIdx["addList:class:"]=1;
 $24=$26;
 _st($23)._addSlide_($24);
 $ctx1.sendIdx["addSlide:"]=6;
-$27=_st($Slide())._new();
-$ctx1.sendIdx["new"]=8;
-_st($27)._title_("次のページ");
-$ctx1.sendIdx["title:"]=8;
-$28=_st($27)._addText_("説明");
-$ctx1.sendIdx["addText:"]=5;
-slide=$28;
-_st(presentation)._addSlide_(slide);
-$ctx1.sendIdx["addSlide:"]=7;
+$27=presentation;
 $29=_st($Slide())._new();
-_st($29)._title_("最後のページ");
-$30=_st($29)._addText_("まとめ");
-slide=$30;
-_st(presentation)._addSlide_(slide);
+$ctx1.sendIdx["new"]=8;
+_st($29)._title_("Amber - ライブラリ");
+$ctx1.sendIdx["title:"]=8;
+_st($29)._shouldAppearInToc_(false);
+$ctx1.sendIdx["shouldAppearInToc:"]=3;
+_st($29)._addText_("jQuery");
+$ctx1.sendIdx["addText:"]=5;
+_st($29)._addList_(["window#jQuery:", "String#asJQuery"]);
+$ctx1.sendIdx["addList:"]=3;
+_st($29)._addText_("HTMLCanvas");
+$30=_st($29)._addList_(["タグ生成メソッド各種"]);
+$ctx1.sendIdx["addList:"]=4;
+$28=$30;
+_st($27)._addSlide_($28);
+$ctx1.sendIdx["addSlide:"]=7;
 $31=presentation;
-return $31;
+$33=_st($Slide())._new();
+$ctx1.sendIdx["new"]=9;
+_st($33)._title_("Amber - not 環境 but IDE");
+$ctx1.sendIdx["title:"]=9;
+_st($33)._shouldAppearInToc_(false);
+$ctx1.sendIdx["shouldAppearInToc:"]=4;
+$34=_st($33)._addList_(["Ctrl + SPC", "Debugger"]);
+$ctx1.sendIdx["addList:"]=5;
+$32=$34;
+_st($31)._addSlide_($32);
+$ctx1.sendIdx["addSlide:"]=8;
+$35=presentation;
+$37=_st($Slide())._new();
+$ctx1.sendIdx["new"]=10;
+_st($37)._title_("デモ");
+$ctx1.sendIdx["title:"]=10;
+$38=_st($37)._addConsole_(["$ amber init", "Welcome to Amber version 0.13.0-pre (NodeJS 0.11.10).", "...snip...", "Please answer the following:", "[?] Project title (Application or Library Title) HelloWorld", "...snip...", "$ ls", "Gruntfile.js      LICENSE-MIT       README.md", "bower.json        bower_components/ index.html", "node_modules/     package.json      src/"]);
+$ctx1.sendIdx["addConsole:"]=1;
+$36=$38;
+_st($35)._addSlide_($36);
+$ctx1.sendIdx["addSlide:"]=9;
+$39=presentation;
+$41=_st($Slide())._new();
+$ctx1.sendIdx["new"]=11;
+_st($41)._title_("デモ");
+$ctx1.sendIdx["title:"]=11;
+_st($41)._shouldAppearInToc_(false);
+$ctx1.sendIdx["shouldAppearInToc:"]=5;
+$42=_st($41)._addConsole_(["$ vim src/Helloworld.js", "  x define(\x22amber_core/Helloworld\x22, ...", "  o define(\x22amber-helloworld/Helloworld\x22, ...", "", "  x ...,\x22amdNamespace\x22:\x22amber_core\x22};", "  o ...,\x22amdNamespace\x22:\x22amber-helloworld\x22};"]);
+$ctx1.sendIdx["addConsole:"]=2;
+$40=$42;
+_st($39)._addSlide_($40);
+$ctx1.sendIdx["addSlide:"]=10;
+$43=presentation;
+$45=_st($Slide())._new();
+$ctx1.sendIdx["new"]=12;
+_st($45)._title_("デモ");
+$ctx1.sendIdx["title:"]=12;
+_st($45)._shouldAppearInToc_(false);
+_st($45)._addConsole_(["$ amber serve"]);
+$ctx1.sendIdx["addConsole:"]=3;
+_st($45)._addBr();
+$46=_st($45)._addConsole_(["$ open http://localhost:4000"]);
+$44=$46;
+_st($43)._addSlide_($44);
+$ctx1.sendIdx["addSlide:"]=11;
+$47=presentation;
+$49=_st($Slide())._new();
+$ctx1.sendIdx["new"]=13;
+_st($49)._title_("利用例");
+$ctx1.sendIdx["title:"]=13;
+$50=_st($49)._addList_(["Amber公式ページ: http://amber-lang.net/", "ToDoIt: http://goo.gl/CE0cXe", "このスライド: https://github.com/technohippy/amber-slide"]);
+$ctx1.sendIdx["addList:"]=6;
+$48=$50;
+_st($47)._addSlide_($48);
+$ctx1.sendIdx["addSlide:"]=12;
+$51=presentation;
+$53=_st($Slide())._new();
+$ctx1.sendIdx["new"]=14;
+_st($53)._title_("まとめ");
+$ctx1.sendIdx["title:"]=14;
+$54=_st($53)._addList_(["Smalltalkです", "JSとの連携が非常に簡単です", "コードを修正するとJSに変換してリロードが必要なのは少し面倒です", "Smalltalkの入門としてなかなかいいかもしれません"]);
+$52=$54;
+_st($51)._addSlide_($52);
+$ctx1.sendIdx["addSlide:"]=13;
+$55=_st($Slide())._new();
+_st($55)._title_("参考");
+$56=_st($55)._addList_class_(["Amber公式ページ: http://amber-lang.net/", "Amber Github: https://github.com/amber-smalltalk/amber", "Amber公式サンプル: https://github.com/amber-smalltalk/amber-examples", "Smalltalk勉強会の資料集: http://www.smalltalk-users.jp/system/app/pages/search?scope=search-site&q=amber"],"small");
+_st(presentation)._addSlide_($56);
+$57=presentation;
+return $57;
 }, function($ctx1) {$ctx1.fill(self,"tenka1AltJs2014",{presentation:presentation,slide:slide},globals.Presentation.klass)})},
 args: [],
-source: "tenka1AltJs2014\x0a\x09\x22Build a presentation for tenka 1 altJS conf\x22\x0a\x09| presentation slide |\x0a\x09presentation := Presentation new\x0a\x09\x09title: 'Amber';\x0a\x09\x09author: 'あんどうやすし';\x0a\x09\x09organization: '株式会社ノハナ';\x0a\x09\x09presentedAt: '2014-06-08'.\x0a\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'What''s Amber?';\x0a\x09\x09addTextBr: 'Amber';\x0a\x09\x09addTextBr: '= Jtalk';\x0a\x09\x09addText: '= ';\x0a\x09\x09addStrongText: '\x22J\x22';\x0a\x09\x09addText: 'avaScript Small';\x0a\x09\x09addStrongText: '\x22talk\x22').\x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'What''s Smalltalk?';\x0a\x09\x09addTextBr: 'Smalltalk';\x0a\x09\x09addText: '= Language + Library + Environment'). \x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Smalltalk - Language';\x0a\x09\x09addTextBr: 'メッセージ式';\x0a\x09\x09addOrderedList: #(\x0a\x09\x09\x09'単項メッセージ: 1 negated.'\x0a\x09\x09\x09'二項メッセージ: 1 + 1.'\x0a\x09\x09\x09'キーワードメッセージ: 1 to: 10 by: 2.')). \x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Smalltalk - Library';\x0a\x09\x09addTextBr: '反復';\x0a\x09\x09addList: #('BlockClosure#whileTrue');\x0a\x09\x09addTextBr: '分岐';\x0a\x09\x09addList: #('Boolean#ifTrue:ifFalse:')). \x0a\x09\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Smalltalk - Environment';\x0a\x09\x09addImage: '/image/tenka1altjs2014/ide.png').\x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Amber - Language';\x0a\x09\x09addText: 'Smalltalk - JS連携';\x0a\x09\x09addList: #(\x0a\x09\x09\x09'ST->JS: (window jQuery: ''body'') css: ''background'' color: ''red'''\x0a\x09\x09\x09'ST->JS: < if (true) {console.log(''hi'')} >'\x0a\x09\x09\x09'JS->ST: dict = require(''amber/helpers'').Dictionary._new(); dict._at_put_(3, 4);') class: 'small').\x0a\x0a\x0a\x09slide := Slide new\x0a\x09\x09title: '次のページ';\x0a\x09\x09addText: '説明'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09slide := Slide new\x0a\x09\x09title: '最後のページ';\x0a\x09\x09addText: 'まとめ'.\x0a\x09presentation addSlide: slide.\x0a\x09\x0a\x09^ presentation",
-messageSends: ["title:", "new", "author:", "organization:", "presentedAt:", "addSlide:", "addTextBr:", "addText:", "addStrongText:", "addOrderedList:", "addList:", "addImage:", "addList:class:"],
+source: "tenka1AltJs2014\x0a\x09\x22Build a presentation for tenka 1 altJS conf\x22\x0a\x09| presentation slide |\x0a\x09presentation := Presentation new\x0a\x09\x09title: 'Amber';\x0a\x09\x09author: 'あんどうやすし';\x0a\x09\x09organization: '株式会社ノハナ';\x0a\x09\x09presentedAt: '2014-06-08';\x0a\x09\x09tocTitle: '目次'.\x0a\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Amberとは？';\x0a\x09\x09addTextBr: 'Amber';\x0a\x09\x09addTextBr: '= Jtalk';\x0a\x09\x09addText: '= ';\x0a\x09\x09addStrongText: '\x22J\x22';\x0a\x09\x09addText: 'avaScript Small';\x0a\x09\x09addStrongText: '\x22talk\x22').\x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Smalltalkとは？';\x0a\x09\x09addTextBr: 'Smalltalk';\x0a\x09\x09addText: '= 言語 + ライブラリ + 環境'). \x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Smalltalk - 言語';\x0a\x09\x09tocTitle: 'Smalltalk';\x0a\x09\x09addTextBr: 'メッセージ式';\x0a\x09\x09addOrderedList: #(\x0a\x09\x09\x09'単項メッセージ: 1 negated.'\x0a\x09\x09\x09'二項メッセージ: 1 + 1.'\x0a\x09\x09\x09'キーワードメッセージ: 1 to: 10 by: 2.')). \x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Smalltalk - ライブラリ';\x0a\x09\x09shouldAppearInToc: false;\x0a\x09\x09addTextBr: '反復';\x0a\x09\x09addList: #('BlockClosure#whileTrue');\x0a\x09\x09addTextBr: '分岐';\x0a\x09\x09addList: #('Boolean#ifTrue:ifFalse:')). \x0a\x09\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Smalltalk - 環境';\x0a\x09\x09shouldAppearInToc: false;\x0a\x09\x09addImage: '/image/tenka1altjs2014/ide.png').\x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Amber - 言語';\x0a\x09\x09tocTitle: 'Amber';\x0a\x09\x09addText: 'Smalltalk - JS連携';\x0a\x09\x09addList: #(\x0a\x09\x09\x09'ST->JS: (window jQuery: ''body'') css: ''background'' color: ''red'''\x0a\x09\x09\x09'ST->JS: < if (true) {console.log(''hi'')} >'\x0a\x09\x09\x09'JS->ST: dict = require(''amber/helpers'').Dictionary._new(); dict._at_put_(3, 4);') class: 'small').\x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Amber - ライブラリ';\x0a\x09\x09shouldAppearInToc: false;\x0a\x09\x09addText: 'jQuery';\x0a\x09\x09addList: #('window#jQuery:' 'String#asJQuery');\x0a\x09\x09addText: 'HTMLCanvas';\x0a\x09\x09addList: #('タグ生成メソッド各種')).\x0a\x09\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'Amber - not 環境 but IDE';\x0a\x09\x09shouldAppearInToc: false;\x0a\x09\x09addList: #('Ctrl + SPC' 'Debugger')).\x0a\x09\x09\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'デモ';\x0a\x09\x09addConsole: #(\x0a\x09\x09\x09'$ amber init' \x0a\x09\x09\x09'Welcome to Amber version 0.13.0-pre (NodeJS 0.11.10).'\x0a\x09\x09\x09'...snip...'\x0a\x09\x09\x09'Please answer the following:'\x0a\x09\x09\x09'[?] Project title (Application or Library Title) HelloWorld'\x0a\x09\x09\x09'...snip...'\x0a\x09\x09\x09'$ ls'\x0a            'Gruntfile.js      LICENSE-MIT       README.md'\x0a\x09\x09\x09'bower.json        bower_components/ index.html'\x0a\x09\x09\x09'node_modules/     package.json      src/')).\x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'デモ';\x0a\x09\x09shouldAppearInToc: false;\x0a\x09\x09addConsole: #(\x0a\x09\x09\x09'$ vim src/Helloworld.js'\x0a\x09\x09\x09'  x define(\x22amber_core/Helloworld\x22, ...'\x0a\x09\x09\x09'  o define(\x22amber-helloworld/Helloworld\x22, ...'\x0a\x09\x09\x09''\x0a\x09\x09\x09'  x ...,\x22amdNamespace\x22:\x22amber_core\x22};'\x0a\x09\x09\x09'  o ...,\x22amdNamespace\x22:\x22amber-helloworld\x22};')).\x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'デモ';\x0a\x09\x09shouldAppearInToc: false;\x0a\x09\x09addConsole: #('$ amber serve');\x0a\x09\x09addBr;\x0a\x09\x09addConsole: #('$ open http://localhost:4000')).\x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: '利用例';\x0a\x09\x09addList: #(\x0a\x09\x09\x09'Amber公式ページ: http://amber-lang.net/'\x0a\x09\x09\x09'ToDoIt: http://goo.gl/CE0cXe'\x0a\x09\x09\x09'このスライド: https://github.com/technohippy/amber-slide')).\x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: 'まとめ';\x0a\x09\x09addList: #(\x0a\x09\x09\x09'Smalltalkです'\x0a\x09\x09\x09'JSとの連携が非常に簡単です'\x0a\x09\x09\x09'コードを修正するとJSに変換してリロードが必要なのは少し面倒です'\x0a\x09\x09\x09'Smalltalkの入門としてなかなかいいかもしれません')).\x0a\x0a\x0a\x09presentation addSlide: (Slide new\x0a\x09\x09title: '参考';\x0a\x09\x09addList: #(\x0a\x09\x09\x09'Amber公式ページ: http://amber-lang.net/'\x0a\x09\x09\x09'Amber Github: https://github.com/amber-smalltalk/amber'\x0a\x09\x09\x09'Amber公式サンプル: https://github.com/amber-smalltalk/amber-examples'\x0a\x09\x09\x09'Smalltalk勉強会の資料集: http://www.smalltalk-users.jp/system/app/pages/search?scope=search-site&q=amber') class: 'small').\x0a\x0a\x09^ presentation",
+messageSends: ["title:", "new", "author:", "organization:", "presentedAt:", "tocTitle:", "addSlide:", "addTextBr:", "addText:", "addStrongText:", "addOrderedList:", "shouldAppearInToc:", "addList:", "addImage:", "addList:class:", "addConsole:", "addBr"],
 referencedClasses: ["Presentation", "Slide"]
 }),
 globals.Presentation.klass);
@@ -1041,7 +1328,7 @@ globals.PresentationWidget);
 
 
 
-smalltalk.addClass('Slide', globals.Object, ['widget', 'presentation', 'title', 'contents', 'shouldAppearInToc', 'classes'], 'Slide');
+smalltalk.addClass('Slide', globals.Object, ['widget', 'presentation', 'title', 'tocTitle', 'contents', 'shouldAppearInToc', 'classes'], 'Slide');
 smalltalk.addMethod(
 smalltalk.method({
 selector: "add:",
@@ -1089,6 +1376,36 @@ return self}, function($ctx1) {$ctx1.fill(self,"addClass:",{aString:aString},glo
 args: ["aString"],
 source: "addClass: aString\x0a\x09classes add: aString",
 messageSends: ["add:"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "addConsole:",
+protocol: 'actions',
+fn: function (anArray){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+var $1,$2;
+self._add_((function(html){
+var pre;
+return smalltalk.withContext(function($ctx2) {
+pre=_st(_st(html)._pre())._class_("code small");
+pre;
+return _st(anArray)._do_((function(line){
+return smalltalk.withContext(function($ctx3) {
+$1=pre;
+_st($1)._with_(line);
+$ctx3.sendIdx["with:"]=1;
+$2=_st($1)._with_("\x0a");
+return $2;
+}, function($ctx3) {$ctx3.fillBlock({line:line},$ctx2,2)})}));
+}, function($ctx2) {$ctx2.fillBlock({html:html,pre:pre},$ctx1,1)})}));
+return self}, function($ctx1) {$ctx1.fill(self,"addConsole:",{anArray:anArray},globals.Slide)})},
+args: ["anArray"],
+source: "addConsole: anArray\x0a\x09self add: [ :html |\x0a\x09\x09| pre |\x0a\x09\x09pre := html pre class: 'code small'.\x0a\x09\x09anArray do: [ :line | pre with: line; with: '\x0a' ]]",
+messageSends: ["add:", "class:", "pre", "do:", "with:"],
 referencedClasses: []
 }),
 globals.Slide);
@@ -1586,6 +1903,45 @@ self["@title"]=anObject;
 return self},
 args: ["anObject"],
 source: "title: anObject\x0a\x09title := anObject",
+messageSends: [],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "tocTitle",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+var $1,$2,$3;
+$1=_st(self["@tocTitle"])._isNil();
+if(smalltalk.assert($1)){
+$2=self["@title"];
+return $2;
+} else {
+$3=self["@tocTitle"];
+return $3;
+};
+return self}, function($ctx1) {$ctx1.fill(self,"tocTitle",{},globals.Slide)})},
+args: [],
+source: "tocTitle\x0a\x09tocTitle isNil\x0a\x09\x09ifTrue: [ ^ title ]\x0a\x09\x09ifFalse: [ ^ tocTitle ]",
+messageSends: ["ifTrue:ifFalse:", "isNil"],
+referencedClasses: []
+}),
+globals.Slide);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "tocTitle:",
+protocol: 'accessing',
+fn: function (anObject){
+var self=this;
+self["@tocTitle"]=anObject;
+return self},
+args: ["anObject"],
+source: "tocTitle: anObject\x0a\x09tocTitle := anObject",
 messageSends: [],
 referencedClasses: []
 }),

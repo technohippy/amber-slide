@@ -49,6 +49,14 @@ body {
   color:red;
 }
 
+.slide pre.code {
+  background-color:black;
+  color:white;
+  font-family:monospace;
+  font-weight:normal;
+  padding:1%;
+}
+
 .title {
   text-align:center;
 }

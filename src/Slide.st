@@ -88,6 +88,22 @@ cursor: anObject
 	cursor := anObject
 !
 
+generatedTitleAt
+	^ generatedTitleAt
+!
+
+generatedTitleAt: anObject
+	generatedTitleAt := anObject
+!
+
+generatedTocAt
+	^ generatedTocAt
+!
+
+generatedTocAt: anObject
+	generatedTocAt := anObject
+!
+
 organization
 	^ organization
 !
@@ -104,8 +120,28 @@ presentedAt: anObject
 	presentedAt := anObject
 !
 
+shouldGenerateTitle
+	^ shouldGenerateTitle
+!
+
+shouldGenerateTitle: anObject
+	shouldGenerateTitle := anObject
+!
+
+shouldGenerateToc
+	^ shouldGenerateToc
+!
+
+shouldGenerateToc: anObject
+	shouldGenerateToc := anObject
+!
+
 slides
 	^ slides
+!
+
+slides: anObject
+	slides := anObject
 !
 
 title
@@ -115,6 +151,14 @@ title
 title: aString
 	title := aString.
 	^ self
+!
+
+tocTitle
+	^ tocTitle
+!
+
+tocTitle: anObject
+	tocTitle := anObject
 !
 
 widget
@@ -171,6 +215,10 @@ start
 
 alertIt: aString
 	window alert: (self doIt: aString)
+!
+
+browseIt: aString
+	Browser openOn: (self doIt: aString).
 !
 
 doIt: aString
@@ -243,7 +291,7 @@ generateTocIfNeeded
 		| titles tocSlide |	
 		titles := #().
 		slides do: [ :slide |
-			slide shouldAppearInToc ifTrue: [titles add: slide title]].
+			slide shouldAppearInToc ifTrue: [titles add: slide tocTitle]].
 		tocSlide := Slide new
 			title: tocTitle;
 			addClass: 'toc';
@@ -255,11 +303,14 @@ generateTocIfNeeded
 
 setupEventHandler
 	window addEventListener: 'keypress' do: [ :event |
-		(event charCode == 4) ifTrue: [ "Ctrl+d"
-			| selectedText |
-			selectedText := window getSelection toString.
-			(selectedText isEmpty) ifFalse: [
-				self alertIt: selectedText]]].
+		| selectedText |
+		window console log: event charCode.
+		selectedText := window getSelection toString.
+		(selectedText isEmpty) ifFalse: [
+			(event charCode = 4) ifTrue: [ "Ctrl+d"
+				self alertIt: selectedText].
+			(event charCode = 2) ifTrue: [ "Ctrl+b"
+				self browseIt: selectedText]]].
 ! !
 
 !Presentation class methodsFor: 'presentation'!
@@ -271,10 +322,11 @@ tenka1AltJs2014
 		title: 'Amber';
 		author: 'あんどうやすし';
 		organization: '株式会社ノハナ';
-		presentedAt: '2014-06-08'.
+		presentedAt: '2014-06-08';
+		tocTitle: '目次'.
 	
 	presentation addSlide: (Slide new
-		title: 'What''s Amber?';
+		title: 'Amberとは？';
 		addTextBr: 'Amber';
 		addTextBr: '= Jtalk';
 		addText: '= ';
@@ -283,12 +335,13 @@ tenka1AltJs2014
 		addStrongText: '"talk"').
 
 	presentation addSlide: (Slide new
-		title: 'What''s Smalltalk?';
+		title: 'Smalltalkとは？';
 		addTextBr: 'Smalltalk';
-		addText: '= Language + Library + Environment'). 
+		addText: '= 言語 + ライブラリ + 環境'). 
 
 	presentation addSlide: (Slide new
-		title: 'Smalltalk - Language';
+		title: 'Smalltalk - 言語';
+		tocTitle: 'Smalltalk';
 		addTextBr: 'メッセージ式';
 		addOrderedList: #(
 			'単項メッセージ: 1 negated.'
@@ -296,35 +349,96 @@ tenka1AltJs2014
 			'キーワードメッセージ: 1 to: 10 by: 2.')). 
 
 	presentation addSlide: (Slide new
-		title: 'Smalltalk - Library';
+		title: 'Smalltalk - ライブラリ';
+		shouldAppearInToc: false;
 		addTextBr: '反復';
 		addList: #('BlockClosure#whileTrue');
 		addTextBr: '分岐';
 		addList: #('Boolean#ifTrue:ifFalse:')). 
 		
 	presentation addSlide: (Slide new
-		title: 'Smalltalk - Environment';
+		title: 'Smalltalk - 環境';
+		shouldAppearInToc: false;
 		addImage: '/image/tenka1altjs2014/ide.png').
 
 	presentation addSlide: (Slide new
-		title: 'Amber - Language';
+		title: 'Amber - 言語';
+		tocTitle: 'Amber';
 		addText: 'Smalltalk - JS連携';
 		addList: #(
 			'ST->JS: (window jQuery: ''body'') css: ''background'' color: ''red'''
 			'ST->JS: < if (true) {console.log(''hi'')} >'
 			'JS->ST: dict = require(''amber/helpers'').Dictionary._new(); dict._at_put_(3, 4);') class: 'small').
 
+	presentation addSlide: (Slide new
+		title: 'Amber - ライブラリ';
+		shouldAppearInToc: false;
+		addText: 'jQuery';
+		addList: #('window#jQuery:' 'String#asJQuery');
+		addText: 'HTMLCanvas';
+		addList: #('タグ生成メソッド各種')).
+		
+	presentation addSlide: (Slide new
+		title: 'Amber - not 環境 but IDE';
+		shouldAppearInToc: false;
+		addList: #('Ctrl + SPC' 'Debugger')).
+		
+	presentation addSlide: (Slide new
+		title: 'デモ';
+		addConsole: #(
+			'$ amber init' 
+			'Welcome to Amber version 0.13.0-pre (NodeJS 0.11.10).'
+			'...snip...'
+			'Please answer the following:'
+			'[?] Project title (Application or Library Title) HelloWorld'
+			'...snip...'
+			'$ ls'
+            'Gruntfile.js      LICENSE-MIT       README.md'
+			'bower.json        bower_components/ index.html'
+			'node_modules/     package.json      src/')).
 
-	slide := Slide new
-		title: '次のページ';
-		addText: '説明'.
-	presentation addSlide: slide.
-	
-	slide := Slide new
-		title: '最後のページ';
-		addText: 'まとめ'.
-	presentation addSlide: slide.
-	
+	presentation addSlide: (Slide new
+		title: 'デモ';
+		shouldAppearInToc: false;
+		addConsole: #(
+			'$ vim src/Helloworld.js'
+			'  x define("amber_core/Helloworld", ...'
+			'  o define("amber-helloworld/Helloworld", ...'
+			''
+			'  x ...,"amdNamespace":"amber_core"};'
+			'  o ...,"amdNamespace":"amber-helloworld"};')).
+
+	presentation addSlide: (Slide new
+		title: 'デモ';
+		shouldAppearInToc: false;
+		addConsole: #('$ amber serve');
+		addBr;
+		addConsole: #('$ open http://localhost:4000')).
+
+	presentation addSlide: (Slide new
+		title: '利用例';
+		addList: #(
+			'Amber公式ページ: http://amber-lang.net/'
+			'ToDoIt: http://goo.gl/CE0cXe'
+			'このスライド: https://github.com/technohippy/amber-slide')).
+
+	presentation addSlide: (Slide new
+		title: 'まとめ';
+		addList: #(
+			'Smalltalkです'
+			'JSとの連携が非常に簡単です'
+			'コードを修正するとJSに変換してリロードが必要なのは少し面倒です'
+			'Smalltalkの入門としてなかなかいいかもしれません')).
+
+
+	presentation addSlide: (Slide new
+		title: '参考';
+		addList: #(
+			'Amber公式ページ: http://amber-lang.net/'
+			'Amber Github: https://github.com/amber-smalltalk/amber'
+			'Amber公式サンプル: https://github.com/amber-smalltalk/amber-examples'
+			'Smalltalk勉強会の資料集: http://www.smalltalk-users.jp/system/app/pages/search?scope=search-site&q=amber') class: 'small').
+
 	^ presentation
 ! !
 
@@ -372,7 +486,7 @@ renderOn: html
 ! !
 
 Object subclass: #Slide
-	instanceVariableNames: 'widget presentation title contents shouldAppearInToc classes'
+	instanceVariableNames: 'widget presentation title tocTitle contents shouldAppearInToc classes'
 	package: 'Slide'!
 
 !Slide methodsFor: 'accessing'!
@@ -425,6 +539,16 @@ title: anObject
 	title := anObject
 !
 
+tocTitle
+	tocTitle isNil
+		ifTrue: [ ^ title ]
+		ifFalse: [ ^ tocTitle ]
+!
+
+tocTitle: anObject
+	tocTitle := anObject
+!
+
 widget
 	^ widget
 !
@@ -441,6 +565,14 @@ add: aBlock
 
 addBr
 	self add: [ :html | html br. ]
+!
+
+addConsole: anArray
+	self add: [ :html |
+		| pre |
+		pre := html pre class: 'code small'.
+		anArray do: [ :line | pre with: line; with: '
+' ]]
 !
 
 addDiv: aString
