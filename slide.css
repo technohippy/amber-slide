@@ -7,6 +7,10 @@ body {
   background:black;
 }
 
+.small {
+  font-size:80%;
+}
+
 .slide {
   position:absolute;
   top:0;
@@ -31,6 +35,13 @@ body {
 
 .slide > .body li {
   margin-left:10%;
+}
+
+.slide > .body img {
+  max-width:65%;
+  max-height:80%;
+  display:block;
+  margin:auto;
 }
 
 .slide strong {

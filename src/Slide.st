@@ -195,12 +195,7 @@ initialize
 	generatedTitleAt := 1.
 	generatedTocAt := 2.
 	
-	window addEventListener: 'keypress' do: [ :event |
-		(event charCode == 4) ifTrue: [ "Ctrl+d"
-			| selectedText |
-			selectedText := window getSelection toString.
-			(selectedText isEmpty) ifFalse: [
-				self alertIt: selectedText]]].
+	self setupEventHandler.
 ! !
 
 !Presentation methodsFor: 'manage slide'!
@@ -253,9 +248,18 @@ generateTocIfNeeded
 			title: tocTitle;
 			addClass: 'toc';
 			shouldAppearInToc: false;
-			addOrderedList: titles.
+			addOrderedList: titles class: 'small'.
 		self addSlide: tocSlide beforeIndex: generatedTocAt.
 	].
+!
+
+setupEventHandler
+	window addEventListener: 'keypress' do: [ :event |
+		(event charCode == 4) ifTrue: [ "Ctrl+d"
+			| selectedText |
+			selectedText := window getSelection toString.
+			(selectedText isEmpty) ifFalse: [
+				self alertIt: selectedText]]].
 ! !
 
 !Presentation class methodsFor: 'presentation'!
@@ -268,7 +272,6 @@ tenka1AltJs2014
 		author: 'あんどうやすし';
 		organization: '株式会社ノハナ';
 		presentedAt: '2014-06-08'.
-	presentation.
 	
 	presentation addSlide: (Slide new
 		title: 'What''s Amber?';
@@ -278,12 +281,40 @@ tenka1AltJs2014
 		addStrongText: '"J"';
 		addText: 'avaScript Small';
 		addStrongText: '"talk"').
-	
+
 	presentation addSlide: (Slide new
 		title: 'What''s Smalltalk?';
 		addTextBr: 'Smalltalk';
-		addText: '= Language + Libraries + IDE'). 
+		addText: '= Language + Library + Environment'). 
+
+	presentation addSlide: (Slide new
+		title: 'Smalltalk - Language';
+		addTextBr: 'メッセージ式';
+		addOrderedList: #(
+			'単項メッセージ: 1 negated.'
+			'二項メッセージ: 1 + 1.'
+			'キーワードメッセージ: 1 to: 10 by: 2.')). 
+
+	presentation addSlide: (Slide new
+		title: 'Smalltalk - Library';
+		addTextBr: '反復';
+		addList: #('BlockClosure#whileTrue');
+		addTextBr: '分岐';
+		addList: #('Boolean#ifTrue:ifFalse:')). 
 		
+	presentation addSlide: (Slide new
+		title: 'Smalltalk - Environment';
+		addImage: '/image/tenka1altjs2014/ide.png').
+
+	presentation addSlide: (Slide new
+		title: 'Amber - Language';
+		addText: 'Smalltalk - JS連携';
+		addList: #(
+			'ST->JS: (window jQuery: ''body'') css: ''background'' color: ''red'''
+			'ST->JS: < if (true) {console.log(''hi'')} >'
+			'JS->ST: dict = require(''amber/helpers'').Dictionary._new(); dict._at_put_(3, 4);') class: 'small').
+
+
 	slide := Slide new
 		title: '次のページ';
 		addText: '説明'.
@@ -420,6 +451,10 @@ addDiv: aString class: class
 	self add: [ :html | html div class: class; with: aString. ]
 !
 
+addImage: aUrl
+	self add: [ :html | html img src: aUrl; align: 'center'. ]
+!
+
 addList: anArray
 	self add: [ :html |
 		html ul with: [ :ulHtml |
@@ -427,11 +462,29 @@ addList: anArray
 				ulHtml li with: item]]]
 !
 
+addList: anArray class: class
+	self add: [ :html |
+		html ul 
+			class: class; 
+			with: [ :ulHtml |
+				anArray do: [ :item |
+					ulHtml li with: item]]]
+!
+
 addOrderedList: anArray
 	self add: [ :html |
 		html ol with: [ :ulHtml |
 			anArray do: [ :item |
 				ulHtml li with: item]]]
+!
+
+addOrderedList: anArray class: class
+	self add: [ :html |
+		html ol 
+			class: class;
+			with: [ :ulHtml |
+				anArray do: [ :item |
+					ulHtml li with: item]]]
 !
 
 addSpan: aString
