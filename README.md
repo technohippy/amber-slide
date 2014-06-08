@@ -8,6 +8,7 @@ Installing dependencies:
 
 ```
 npm install
+bower install
 ```
 
 Open `index.html` in your browser and follow the instructions
