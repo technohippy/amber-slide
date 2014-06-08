@@ -54,10 +54,6 @@ renderOn: html
 
 setupEventHandler
 	window addEventListener: 'keypress' do: [ :event |
-	window console
-		log: event charCode;
-		log: ',';
-		log: event keyCode.
 		"p"
 		(event charCode == 112) ifTrue: [ self movePrev ].
 		

@@ -121,39 +121,29 @@ protocol: 'rendering',
 fn: function (){
 var self=this;
 return smalltalk.withContext(function($ctx1) { 
-var $1,$2,$3,$4,$6,$5,$9,$8,$7;
+var $2,$1,$5,$4,$3;
 _st(window)._addEventListener_do_("keypress",(function(event){
 return smalltalk.withContext(function($ctx2) {
-$1=_st(window)._console();
-$2=$1;
-$3=_st(event)._charCode();
+$2=_st(event)._charCode();
 $ctx2.sendIdx["charCode"]=1;
-_st($2)._log_($3);
-$ctx2.sendIdx["log:"]=1;
-_st($1)._log_(",");
-$ctx2.sendIdx["log:"]=2;
-$4=_st($1)._log_(_st(event)._keyCode());
-$4;
-$6=_st(event)._charCode();
-$ctx2.sendIdx["charCode"]=2;
-$5=_st($6).__eq_eq((112));
+$1=_st($2).__eq_eq((112));
 $ctx2.sendIdx["=="]=1;
-if(smalltalk.assert($5)){
+if(smalltalk.assert($1)){
 self._movePrev();
 };
-$9=_st(event)._charCode();
-$ctx2.sendIdx["charCode"]=3;
-$8=_st($9).__eq_eq((110));
+$5=_st(event)._charCode();
+$ctx2.sendIdx["charCode"]=2;
+$4=_st($5).__eq_eq((110));
 $ctx2.sendIdx["=="]=2;
-$7=_st($8).__or(_st(_st(event)._charCode()).__eq_eq((13)));
-if(smalltalk.assert($7)){
+$3=_st($4).__or(_st(_st(event)._charCode()).__eq_eq((13)));
+if(smalltalk.assert($3)){
 return self._moveNext();
 };
 }, function($ctx2) {$ctx2.fillBlock({event:event},$ctx1,1)})}));
 return self}, function($ctx1) {$ctx1.fill(self,"setupEventHandler",{},globals.PagenatorWidget)})},
 args: [],
-source: "setupEventHandler\x0a\x09window addEventListener: 'keypress' do: [ :event |\x0a\x09window console\x0a\x09\x09log: event charCode;\x0a\x09\x09log: ',';\x0a\x09\x09log: event keyCode.\x0a\x09\x09\x22p\x22\x0a\x09\x09(event charCode == 112) ifTrue: [ self movePrev ].\x0a\x09\x09\x0a\x09\x09\x22n or enter\x22\x0a\x09\x09((event charCode == 110) | (event charCode == 13)) ifTrue: [ self moveNext ]].",
-messageSends: ["addEventListener:do:", "log:", "console", "charCode", "keyCode", "ifTrue:", "==", "movePrev", "|", "moveNext"],
+source: "setupEventHandler\x0a\x09window addEventListener: 'keypress' do: [ :event |\x0a\x09\x09\x22p\x22\x0a\x09\x09(event charCode == 112) ifTrue: [ self movePrev ].\x0a\x09\x09\x0a\x09\x09\x22n or enter\x22\x0a\x09\x09((event charCode == 110) | (event charCode == 13)) ifTrue: [ self moveNext ]].",
+messageSends: ["addEventListener:do:", "ifTrue:", "==", "charCode", "movePrev", "|", "moveNext"],
 referencedClasses: []
 }),
 globals.PagenatorWidget);
