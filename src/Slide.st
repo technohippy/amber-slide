@@ -255,7 +255,9 @@ addSlide: aSlide
 
 addSlide: aSlide beforeIndex: index
 	aSlide presentation: self.
-	slides add: aSlide beforeIndex: index.
+	"slides add: aSlide beforeIndex: index."
+	"slides splice: index delete: 0 add: aSlide."
+	self helpAddSlide: aSlide beforeIndex: index
 !
 
 generateTitle
@@ -299,6 +301,10 @@ generateTocIfNeeded
 			addOrderedList: titles class: 'small'.
 		self addSlide: tocSlide beforeIndex: generatedTocAt.
 	].
+!
+
+helpAddSlide: aSlide beforeIndex: index
+	<self["@slides"].splice(index-1, 0, aSlide)>
 !
 
 setupEventHandler

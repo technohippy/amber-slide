@@ -218,11 +218,11 @@ fn: function (aSlide,index){
 var self=this;
 return smalltalk.withContext(function($ctx1) { 
 _st(aSlide)._presentation_(self);
-_st(self["@slides"])._add_beforeIndex_(aSlide,index);
+self._helpAddSlide_beforeIndex_(aSlide,index);
 return self}, function($ctx1) {$ctx1.fill(self,"addSlide:beforeIndex:",{aSlide:aSlide,index:index},globals.Presentation)})},
 args: ["aSlide", "index"],
-source: "addSlide: aSlide beforeIndex: index\x0a\x09aSlide presentation: self.\x0a\x09slides add: aSlide beforeIndex: index.",
-messageSends: ["presentation:", "add:beforeIndex:"],
+source: "addSlide: aSlide beforeIndex: index\x0a\x09aSlide presentation: self.\x0a\x09\x22slides add: aSlide beforeIndex: index.\x22\x0a\x09\x22slides splice: index delete: 0 add: aSlide.\x22\x0a\x09self helpAddSlide: aSlide beforeIndex: index",
+messageSends: ["presentation:", "helpAddSlide:beforeIndex:"],
 referencedClasses: []
 }),
 globals.Presentation);
@@ -530,6 +530,22 @@ return $1;
 args: [],
 source: "hasNext\x0a\x09^ cursor < slides size",
 messageSends: ["<", "size"],
+referencedClasses: []
+}),
+globals.Presentation);
+
+smalltalk.addMethod(
+smalltalk.method({
+selector: "helpAddSlide:beforeIndex:",
+protocol: 'private',
+fn: function (aSlide,index){
+var self=this;
+return smalltalk.withContext(function($ctx1) { 
+self["@slides"].splice(index-1, 0, aSlide);
+return self}, function($ctx1) {$ctx1.fill(self,"helpAddSlide:beforeIndex:",{aSlide:aSlide,index:index},globals.Presentation)})},
+args: ["aSlide", "index"],
+source: "helpAddSlide: aSlide beforeIndex: index\x0a\x09<self[\x22@slides\x22].splice(index-1, 0, aSlide)>",
+messageSends: [],
 referencedClasses: []
 }),
 globals.Presentation);
